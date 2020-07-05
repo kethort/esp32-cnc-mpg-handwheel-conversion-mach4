@@ -1,15 +1,3 @@
-/*
-  Modbus-Arduino Example - Test Led (Modbus IP ESP8266)
-  Control a Led on GPIO0 pin using Write Single Coil Modbus Function 
-  Original library
-  Copyright by André Sarmento Barbosa
-  http://github.com/andresarmento/modbus-arduino
-
-  Current version
-  (c)2017 Alexander Emelianov (a.m.emelianov@gmail.com)
-  https://github.com/emelianov/modbus-esp8266
-*/
-
 #include <WiFi.h>
 #include <DNSServer.h>
 #include <WebServer.h>
