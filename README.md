@@ -7,8 +7,8 @@ To connect the ESP32 to the network (only has to be done once):
 4. Enter the network SSID and password in the wifi portal that comes up. If the wifi portal does not automatically launch then enter "192.168.4.1" into the address bar of any      internet browser. This should bring up the wifi portal page. 
 
 ## Required Libraries
-https://github.com/emelianov/modbus-esp8266
-https://github.com/madhephaestus/ESP32Encoder
+https://github.com/emelianov/modbus-esp8266 <br>
+https://github.com/madhephaestus/ESP32Encoder <br>
 https://github.com/tzapu/WiFiManager
 
 
