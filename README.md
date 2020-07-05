@@ -1,1 +1,2 @@
-# Mach4ESP32ModbusMPGHandwheel
+# MPG Handwheel Prototype Using ESP32 and Modbus TCP library
+
