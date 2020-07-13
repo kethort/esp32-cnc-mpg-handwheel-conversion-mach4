@@ -13,7 +13,8 @@ To connect the ESP32 to the network (only has to be done once):
 4. 1x 5v 4-Terminal 100ppr Manual Pulse Generator
 5. 1x ESP-32S Development Board
 6. 1x TP4056 Lithium Battery Charger Module
-7. (optional) 1x 10uf Electrolytic Capacitor [any voltage]
+7. 1x SPST Switch
+8. (optional) 1x 10uf Electrolytic Capacitor [any voltage]
 
 ## Wiring
 <p align="center">
