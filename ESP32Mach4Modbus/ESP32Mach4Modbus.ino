@@ -6,8 +6,8 @@
 #include <ESP32Encoder.h>
 
 ModbusIP mb;
-int regs[] = {1, 2, 3, 4, 5, 6, 7, 9, 10}; 
-int pins[] = {13, 14, 15, 21, 22, 25, 27, 32, 33};
+int regs[] = {1, 2, 3, 4, 5, 6, 7}; 
+int pins[] = {13, 14, 27, 25, 26, 23, 19};
 
 ESP32Encoder encoder;
 
