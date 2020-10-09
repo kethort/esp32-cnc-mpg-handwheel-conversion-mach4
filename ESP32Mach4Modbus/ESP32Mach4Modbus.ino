@@ -4,6 +4,7 @@
 #include <WiFiManager.h> 
 #include <ModbusIP_ESP8266.h>
 #include <ESP32Encoder.h>
+//#include <Pangodream_18650_CL.h>
 
 #define STATIC_IP
 
@@ -14,6 +15,8 @@ int pins[] = {13, 14, 27, 32, 35, 34, 25, 15, 21, 22};
 byte currentPin;
 
 ESP32Encoder encoder;
+
+//Pangodream_18650_CL BL(36, 1.7, 50); // battery voltage ADC input pin 36
 
 void setup() {
   Serial.begin(115200);
@@ -45,9 +48,12 @@ void setup() {
   encoder.attachFullQuad(2, 4);
   encoder.clearCount();
   mb.addHreg(55); // encoder counts modbus register
+  mb.addHreg(56); // battery level register
 }
- 
+
 void loop() {
+  //mb.Hreg(56, BL.getBatteryChargeLevel());
+  
   mb.task();
   
   for(int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++)
