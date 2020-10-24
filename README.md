@@ -6,7 +6,7 @@ To connect the ESP32 to the network (only has to be done once):
 3. From the computer, connect to the wireless network named AutoConnectAP
 4. Enter the network SSID and password in the wifi portal that comes up. If the wifi portal does not automatically launch then enter "192.168.4.1" into the address bar of any      internet browser. This should bring up the wifi portal page. 
 
-## Parts List
+## Parts List (Custom MPG)
 1. 2x 12-Pin 1-Pole 11-Position Rotary Switch
 2. 1x Momentary Switch
 3. 1x 3.7v 2800mAh Lipo Battery
@@ -20,6 +20,14 @@ To connect the ESP32 to the network (only has to be done once):
 <p align="center">
   <img src="/img/WirelessMPG_bb.png" width="750"/>
 </p>
+
+## Parts List (Amazon MPG)
+1.	https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1
+2.	https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1
+3.	https://www.amazon.com/gp/product/B082XJXQS6/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1
+4.	https://www.amazon.com/gp/product/B07XG323G8/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1
+5.	https://www.amazon.com/gp/product/B07T4YHP7Q/ref=ppx_yo_dt_b_asin_title_o02_s00?ie=UTF8&psc=1
+6.	https://www.amazon.com/gp/product/B07Q576VWZ/ref=ppx_yo_dt_b_asin_title_o04_s03?ie=UTF8&psc=1
 
 ## Wiring for Amazon Handwheel
 battery -> TP4056 Charger Module -> XL6009 Boost Convert (3.3 to 5V) -> MPG Estop switch -> ESP32 VIN/GND <br> <br>
