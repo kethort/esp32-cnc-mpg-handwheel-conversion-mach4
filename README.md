@@ -21,6 +21,32 @@ To connect the ESP32 to the network (only has to be done once):
   <img src="/img/WirelessMPG_bb.png" width="750"/>
 </p>
 
+## Wiring for Amazon Handwheel
+battery -> TP4056 Charger Module -> XL6009 Boost Convert (3.3 to 5V) -> MPG Estop switch -> ESP32 VIN/GND <br> <br>
+(The LED on the MPG PCB is connected to the 3.3v and GND terminals on the ESP32) <br> <br>
+MPG PCB: <br>
+    ESP32 GND    -> COM <br>
+    ESP32 Pin 2  -> A+ <br>
+    ESP32 Pin 4  -> B+ <br>
+    ESP32 Pin 13 -> X Axis <br>
+    ESP32 Pin 14 -> Y Axis <br>
+    ESP32 Pin 27 -> Z Axis <br>
+    ESP32 Pin 25 -> MPG Enable Switch <br>
+    ESP32 Pin 32 -> A Axis <br>
+    ESP32 Pin 35 -> B Axis (8k ohm pullup to 3.3v) <br>
+    ESP32 Pin 34 -> C Axis (8k ohm pullup to 3.3v) <br>
+    ESP32 Pin 15 -> Inc 1 <br>
+    ESP32 Pin 21 -> Inc 2 <br>
+    ESP32 Pin 22 -> Inc 3 <br> <br>
+
+(only if you want ethernet instead of just WiFi) <br>
+W5500 Lite: <br>
+    ESP32 Pin 23 -> MOSI <br>
+    ESP32 Pin 19 -> MISO <br>
+    ESP32 Pin 18 -> SCLK <br>
+    ESP32 Pin 5  -> CS <br>
+    ESP32 Pin 26 -> RST <br>
+
 ## Demonstration
 https://www.youtube.com/watch?v=6ejczGxR-vw <br>
 https://www.youtube.com/watch?v=FvmKIaZbhRo
