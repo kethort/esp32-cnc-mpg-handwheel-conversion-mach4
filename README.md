@@ -23,6 +23,10 @@ To connect the ESP32 to the network (only has to be done once):
 
 ## Demonstration
 https://www.youtube.com/watch?v=6ejczGxR-vw
+https://www.youtube.com/watch?v=FvmKIaZbhRo
+
+## More info
+https://www.machsupport.com/forum/index.php?topic=43759.msg281820#msg281820
 
 ## Required Libraries
 https://github.com/emelianov/modbus-esp8266 <br>
