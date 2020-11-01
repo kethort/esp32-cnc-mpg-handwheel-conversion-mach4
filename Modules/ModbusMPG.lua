@@ -37,9 +37,7 @@ function ModbusMPG.restartModbusConnection()
 	mc.mcRegSetValueString(modbusCmdReg, "START")
 end
 
-function setMPGAxisAndInc()
-	mc.mcMpgSetAxis(inst, 0, ModbusMPG.mpgSelectedAxis - 1)
-
+function setMPGIncrement()
 	local mpgInc1Selected = mc.mcSignalGetState(mpgInc1SelReg) == 1
 	local mpgInc2Selected = mc.mcSignalGetState(mpgInc2SelReg) == 1
 	local mpgInc3Selected = mc.mcSignalGetState(mpgInc3SelReg) == 1
@@ -105,8 +103,8 @@ function processMPGMove(modbusMPGEncoderCounts)
 		-- axis to where it was before the MPG move and moves the new axis to the current encoder counts
 		-- of the pendant. That is why the program is "forced" to only accept a delta in counts less than 100
 		if ModbusMPG.axisChanged then
-			ModbusMPG.axisChanged = false			
-			setMPGAxisAndInc()
+			ModbusMPG.axisChanged = false
+			mc.mcMpgSetAxis(inst, 0, ModbusMPG.mpgSelectedAxis - 1)
 		else
 			if math.abs(newMachMPGEncCounts - ModbusMPG.lastMPGCountsMoved) < 100 then
 				mc.mcMpgMoveCounts(inst, 0, newMachMPGEncCounts - ModbusMPG.lastMPGCountsMoved)
@@ -132,6 +130,7 @@ function ModbusMPG.RunModbusMPG()
 	local modbusMPGEncoderCounts = mc.mcRegGetValue(modbusMPGEncoderCountsReg)
 
 	getSelectedMPGAxis()
+	setMPGIncrement()
 
 	if tonumber(ModbusMPG.mpgSelectedAxis) > 0 and mpgEnabled == 1 then
 		handleAxisSelectionChange(modbusMPGEncoderCounts)	
