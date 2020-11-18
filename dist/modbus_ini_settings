@@ -1,0 +1,197 @@
+[ModbusDevice]
+[ModbusDevice/ModbusMPG]
+Type=2
+Interval=10
+Retry=3
+Timeout=1000
+EnronMode32=0
+SwapIntWords=1
+SwapFloatWords=0
+UseBaseZero=1
+InitialState=1
+Desc=esp32
+IPAddr=192.168.1.222
+TcpPort=502
+Func0=function0
+Func1=function1
+[ModbusDevice/ModbusMPG/function0]
+Desc=readHregs
+Type=4
+SlaveAddr=1
+MbAddr=55
+NbrRegs=2
+BitPack=0
+Bits=0
+ReadAs=0
+InitialState=1
+ScanDenominator=1
+Res0=MPGEnc
+Res1=BattLvl
+[ModbusDevice/ModbusMPG/function0/MPGEnc]
+Desc=MPG Encoder Counts
+Type=128
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function0/BattLvl]
+Desc=Battery Charge Level
+Type=128
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1]
+Desc=readCoils
+Type=0
+SlaveAddr=1
+MbAddr=1
+NbrRegs=11
+BitPack=0
+Bits=0
+ReadAs=0
+InitialState=1
+ScanDenominator=1
+Res0=XSel
+Res1=YSel
+Res2=ZSel
+Res3=Enable
+Res4=Inc1
+Res5=Inc2
+Res6=Inc3
+Res7=N/A
+Res8=ASel
+Res9=BSel
+Res10=CSel
+[ModbusDevice/ModbusMPG/function1/XSel]
+Desc=X Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/YSel]
+Desc=Y Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/ZSel]
+Desc=Z Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/Enable]
+Desc=MPG Enable
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/Inc1]
+Desc=MPG Inc 1
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/Inc2]
+Desc=MPG Inc 2
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/Inc3]
+Desc=MPG Inc 3
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/N]
+[ModbusDevice/ModbusMPG/function1/N/A]
+Desc=N/A
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/ASel]
+Desc=A Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/BSel]
+Desc=B Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/CSel]
+Desc=C Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[Signal55]
+ID=55
+Type=Input
+Desc=Input #54
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/XSel
+UserDesc=MPG X Axis Sel
+[Signal56]
+ID=56
+Type=Input
+Desc=Input #55
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/YSel
+UserDesc=MPG Y Axis Sel
+[Signal57]
+ID=57
+Type=Input
+Desc=Input #56
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/ZSel
+UserDesc=MPG Z Axis Sel
+[Signal58]
+ID=58
+Type=Input
+Desc=Input #57
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/ASel
+UserDesc=MPG A Axis Sel
+[Signal59]
+ID=59
+Type=Input
+Desc=Input #58
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/BSel
+UserDesc=MPG B Axis Sel
+[Signal60]
+ID=60
+Type=Input
+Desc=Input #59
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/CSel
+UserDesc=MPG C Axis Sel
+[Signal61]
+ID=61
+Type=Input
+Desc=Input #60
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/Enable
+UserDesc=MPG Enable
+[Signal62]
+ID=62
+Type=Input
+Desc=Input #61
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/Inc1
+UserDesc=MPG Inc 1
+[Signal63]
+ID=63
+Type=Input
+Desc=Input #62
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/Inc2
+UserDesc=MPG Inc 2
+[Signal64]
+ID=64
+Type=Input
+Desc=Input #63
+Enabled=1
+Negated=0
+Mapping=ModbusMPG/Inc3
+UserDesc=MPG Inc 3
