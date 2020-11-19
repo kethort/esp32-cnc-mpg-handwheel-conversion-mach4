@@ -1,5 +1,10 @@
 # MPG Handwheel Prototype Using ESP32 and Modbus TCP library
 
+## Required Arduino Libraries
+https://github.com/emelianov/modbus-esp8266 <br>
+https://github.com/madhephaestus/ESP32Encoder <br>
+https://github.com/tzapu/WiFiManager
+
 ## ESP32 Firmware and Network Setup
 1. Upload the Mach4MPGModbus.ino file to the ESP32 using the Arduino (or other) IDE.
 2. Reboot the ESP32.
@@ -73,8 +78,3 @@ https://www.youtube.com/watch?v=FvmKIaZbhRo
 
 ## More info
 https://www.machsupport.com/forum/index.php?topic=43759.msg281820#msg281820
-
-## Required Libraries
-https://github.com/emelianov/modbus-esp8266 <br>
-https://github.com/madhephaestus/ESP32Encoder <br>
-https://github.com/tzapu/WiFiManager
