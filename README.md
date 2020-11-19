@@ -6,20 +6,20 @@
 3. The ESP32 device should show up in the list of network access points. 
 
 <p align="center">
-  <img src="/img/access_point.png" width="750"/>
+  <img src="/img/access_point.png" width="250"/>
 </p>
 
 4. Connect to this access point and navigate to 192.168.4.1 in a browser. 
 5. Press the "Configure Wifi" button.
 
 <p align="center">
-  <img src="/img/captive_portal.PNG" width="750"/>
+  <img src="/img/captive_portal.PNG" width="250"/>
 </p>
 
 6. Find your network access point and connect to it by providing your network credentials.
 
 <p align="center">
-  <img src="/img/captive_portal2.PNG" width="750"/>
+  <img src="/img/captive_portal2.PNG" width="250"/>
 </p>
 
 ## Mach4 Software Setup
@@ -27,13 +27,13 @@
 2. Find the local IP address of the ESP32. 
 
 <p align="center">
-  <img src="/img/ip_address.PNG" width="750"/>
+  <img src="/img/ip_address.PNG" width="250"/>
 </p>
 
 3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. 
 
 <p align="center">
-  <img src="/img/mpg_installer.PNG" width="750"/>
+  <img src="/img/mpg_installer.PNG" width="250"/>
 </p>
 
 ## Parts List
