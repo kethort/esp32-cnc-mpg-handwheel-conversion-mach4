@@ -24,7 +24,7 @@
 
 ## Mach4 Software Setup
 1. Launch the MPGInstaller.exe from the dist folder of the repo.
-2. Find the local IP address of the ESP32. 
+2. Find the local IP address of the ESP32 (espressif). 
 
 <p align="center">
   <img src="/img/ip_address.PNG" width="250"/>
