@@ -1,4 +1,5 @@
 # MPG Handwheel Prototype Using ESP32 and Modbus TCP library
+<<<<<<< HEAD
 
 ## ESP32 Firmware and Network Setup
 1. Upload the Mach4MPGModbus.ino file to the ESP32 using the Arduino (or other) IDE.
@@ -33,6 +34,52 @@
 4.  https://www.amazon.com/gp/product/B07XG323G8/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1
 5.  https://www.amazon.com/gp/product/B07Q576VWZ/ref=ppx_yo_dt_b_asin_title_o04_s03?ie=UTF8&psc=1
 
+=======
+
+## ESP32 Firmware and Network Setup
+1. Upload the Mach4MPGModbus.ino file to the ESP32 using the Arduino (or other) IDE.
+2. Reboot the ESP32.
+3. The ESP32 device should show up in the list of network access points. 
+
+<p align="center">
+  <img src="/img/access_point.png" width="750"/>
+</p>
+
+4. Connect to this access point and navigate to 192.168.4.1 in a browser. 
+5. Press the "Configure Wifi" button.
+
+<p align="center">
+  <img src="/img/captive_portal.PNG" width="750"/>
+</p>
+
+6. Find your network access point and connect to it by providing your network credentials.
+
+<p align="center">
+  <img src="/img/captive_portal2.PNG" width="750"/>
+</p>
+
+## Mach4 Software Setup
+1. Launch the MPGInstaller.exe from the dist folder of the repo.
+2. Find the local IP address of the ESP32. 
+
+<p align="center">
+  <img src="/img/ip_address.PNG" width="750"/>
+</p>
+
+3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. 
+
+<p align="center">
+  <img src="/img/mpg_installer.PNG" width="750"/>
+</p>
+
+## Parts List
+1.	https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1
+2.	https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1
+3.	https://www.amazon.com/gp/product/B082XJXQS6/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1
+4.	https://www.amazon.com/gp/product/B07XG323G8/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1
+5.	https://www.amazon.com/gp/product/B07Q576VWZ/ref=ppx_yo_dt_b_asin_title_o04_s03?ie=UTF8&psc=1
+
+>>>>>>> ef85c9e3e38f91ab4eda7d461c91c22c7f9f1824
 ## Wiring
 battery -> TP4056 Charger Module -> XL6009 Boost Convert (3.3 to 5V) -> MPG Estop switch -> ESP32 VIN/GND <br> <br>
 (The LED on the MPG PCB is connected to the 3.3v and GND terminals on the ESP32) <br> <br>
