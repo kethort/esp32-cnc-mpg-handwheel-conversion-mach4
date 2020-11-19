@@ -1,10 +1,40 @@
 # MPG Handwheel Prototype Using ESP32 and Modbus TCP library
-To connect the ESP32 to the network (only has to be done once):
 
-1. Edit the sketch with an ip address, gateway and subnet mask that matches the network that the device will connect to
-2. Upload the sketch to the device
-3. From the computer, connect to the wireless network named AutoConnectAP
-4. Enter the network SSID and password in the wifi portal that comes up. If the wifi portal does not automatically launch then enter "192.168.4.1" into the address bar of any      internet browser. This should bring up the wifi portal page. 
+## ESP32 Firmware and Network Setup
+1. Upload the Mach4MPGModbus.ino file to the ESP32 using the Arduino (or other) IDE.
+2. Reboot the ESP32.
+3. The ESP32 device should show up in the list of network access points. 
+
+<p align="center">
+  <img src="/img/access_point.png" width="750"/>
+</p>
+
+4. Connect to this access point and navigate to 192.168.4.1 in a browser. 
+5. Press the "Configure Wifi" button.
+
+<p align="center">
+  <img src="/img/captive_portal.PNG" width="750"/>
+</p>
+
+6. Find your network access point and connect to it by providing your network credentials.
+
+<p align="center">
+  <img src="/img/captive_portal2.PNG" width="750"/>
+</p>
+
+## Mach4 Software Setup
+1. Launch the MPGInstaller.exe from the dist folder of the repo.
+2. Find the local IP address of the ESP32. 
+
+<p align="center">
+  <img src="/img/ip_address.PNG" width="750"/>
+</p>
+
+3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. 
+
+<p align="center">
+  <img src="/img/mpg_installer.PNG" width="750"/>
+</p>
 
 ## Parts List
 1.	https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1
