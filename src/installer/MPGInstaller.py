@@ -339,9 +339,9 @@ class AppWindow(wx.Frame):
 		shutil.copy('MPGWiz.mcs', wizards_dir)
 
 		# copy MPG_Inputs.lua & .pmc to PMC directory
-		pmc_dir = os.path.join(mach_dir, 'PMC')
-		shutil.copy('MPG_Inputs.lua', pmc_dir)
-		shutil.copy('MPG_Inputs.pmc', pmc_dir)
+		#pmc_dir = os.path.join(mach_dir, 'PMC')
+		#shutil.copy('MPG_Inputs.lua', pmc_dir)
+		#shutil.copy('MPG_Inputs.pmc', pmc_dir)
 
 		# write the edited Machine.ini into the Mach4 Profiles directory
 		self.dict_to_machine_ini(ini_dict, ini_path)
