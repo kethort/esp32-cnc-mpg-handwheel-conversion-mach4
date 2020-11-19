@@ -13,7 +13,7 @@
 5. Press the "Configure Wifi" button.
 
 <p align="center">
-  <img src="/img/captive_portal.png" width="250"/>
+  <img src="/img/captive_portal.png" width="300"/>
 </p>
 
 6. Find your network access point and connect to it by providing your network credentials.
@@ -27,13 +27,13 @@
 2. Find the local IP address of the ESP32 (espressif). 
 
 <p align="center">
-  <img src="/img/ip_address.PNG" width="250"/>
+  <img src="/img/ip_address.PNG" width="300"/>
 </p>
 
 3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. 
 
 <p align="center">
-  <img src="/img/mpg_installer.PNG" width="250"/>
+  <img src="/img/mpg_installer.PNG" width="300"/>
 </p>
 
 ## Parts List
