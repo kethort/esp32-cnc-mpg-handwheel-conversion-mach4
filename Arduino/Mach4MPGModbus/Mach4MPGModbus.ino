@@ -6,7 +6,7 @@
 #include <ESP32Encoder.h>
 //#include <Pangodream_18650_CL.h>
 
-#define STATIC_IP
+//#define STATIC_IP
 
 ModbusIP mb;
 int regs[] = {1,  2,  3,  9,  10, 11, 4,  5,  6,  7}; 
