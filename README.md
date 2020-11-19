@@ -36,6 +36,13 @@
   <img src="/img/mpg_installer.PNG" width="300"/>
 </p>
 
+4. Turn on the ESP32 MPG, open Mach4 and navigate to Diagnostic->Modbus in the File Menu.
+5. To connect or reconnect to the modbus device, press the stop button in the diagnostic window and then the play button. 
+
+<p align="center">
+  <img src="/img/modbus_diag.PNG" width="300"/>
+</p>
+ 
 ## Parts List
 1.  https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1
 2.  https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1
