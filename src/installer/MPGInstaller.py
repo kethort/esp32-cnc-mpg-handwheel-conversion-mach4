@@ -335,8 +335,8 @@ class AppWindow(wx.Frame):
 		shutil.copy('ModbusMPG.lua', modules_dir)
 
 		# copy MPGWiz to wizards directory
-		wizards_dir = os.path.join(mach_dir, 'Wizards')
-		shutil.copy('MPGWiz.mcs', wizards_dir)
+		#wizards_dir = os.path.join(mach_dir, 'Wizards')
+		#shutil.copy('MPGWiz.mcs', wizards_dir)
 
 		# copy MPG_Inputs.lua & .pmc to PMC directory
 		#pmc_dir = os.path.join(mach_dir, 'PMC')
