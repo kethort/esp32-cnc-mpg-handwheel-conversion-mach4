@@ -13,7 +13,7 @@
 5. Press the "Configure Wifi" button.
 
 <p align="center">
-  <img src="/img/captive_portal.PNG" width="250"/>
+  <img src="/img/captive_portal.png" width="250"/>
 </p>
 
 6. Find your network access point and connect to it by providing your network credentials.
