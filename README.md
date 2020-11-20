@@ -50,7 +50,7 @@ https://github.com/tzapu/WiFiManager
 
 6. This wizard is currently in beta and it's not recommended to run the Wizard while Mach4 is enabled.
 
-   The wizard can be accessed by opening the Wizard launcher in the Mach4 file menu. (Wizard->Select Wizard->MPGWiz.
+   The wizard can be accessed by opening the Wizard launcher in the Mach4 file menu. (Wizard->Select Wizard->MPGWiz)
    
 <p align="center">
   <img src="/img/wizard.PNG" width="300"/>
