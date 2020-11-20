@@ -2,16 +2,21 @@ inst = mc.mcGetInstance()
 
 ModbusMPG = {}
 
-ModbusMPG.mpgLastSelectedAxis = 0
-ModbusMPG.lastMPGEncoderCounts = 0
-ModbusMPG.lastMPGCountsMoved = 0
-ModbusMPG.machEncoderCounts = 0
+lastMPGEncoderCounts = 0
+lastMPGCountsMoved = 0
+machEncoderCounts = 0
+
+ModbusMPG.mpgSelectedAxis = 0
+ModbusMPG.mpgLastSelectedAxis = -1
 ModbusMPG.axisChanged = false
-ModbusMPG.mpgSelectedAxis = -1
+
+ModbusMPG.mpgSelectedInc = 0
+lastMPGInc = -1
+ModbusMPG.mutex = false
 
 mc.mcMpgSetAccel(inst, 11, 80)  
 mc.mcMpgSetRate(inst, 11, 100)
-mc.mcMpgSetCountsPerDetent(inst, 0, 4)
+mc.mcMpgSetCountsPerDetent(inst, 11, 4)
 
 local modbusStatusReg = mc.mcRegGetHandle(inst, "mbcntl/status")
 local modbusRunningReg = mc.mcRegGetHandle(inst, "gRegs0/ModbusRunning")
@@ -31,12 +36,6 @@ local mpgInc2SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT62)
 local mpgInc3SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT63)
 local modbusStateReg = mc.mcSignalGetHandle(inst, mc.OSIG_OUTPUT63)
 
-function ModbusMPG.restartModbusConnection()
-	local modbusCmdReg = mc.mcRegGetHandle(inst, "mbcntl/command")
-	mc.mcRegSetValueString(modbusCmdReg, "STOP")
-	mc.mcRegSetValueString(modbusCmdReg, "START")
-end
-
 function setMPGIncrement()
 	local mpgInc1Selected = mc.mcSignalGetState(mpgInc1SelReg) == 1
 	local mpgInc2Selected = mc.mcSignalGetState(mpgInc2SelReg) == 1
@@ -52,7 +51,22 @@ function setMPGIncrement()
 		incVal = 0.1
 	end
 
+	mc.mcCntlSetLastError(inst, tostring(incVal))
 	mc.mcMpgSetInc(inst, 11, incVal)
+end
+
+function getMPGIncrement()
+	local mpgInc1Selected = mc.mcSignalGetState(mpgInc1SelReg) == 1
+	local mpgInc2Selected = mc.mcSignalGetState(mpgInc2SelReg) == 1
+	local mpgInc3Selected = mc.mcSignalGetState(mpgInc3SelReg) == 1
+
+	if mpgInc1Selected then
+		ModbusMPG.mpgSelectedInc = 1
+	elseif mpgInc2Selected then
+		ModbusMPG.mpgSelectedInc = 2
+	elseif mpgInc3Selected then 
+		ModbusMPG.mpgSelectedInc = 3
+	end
 end
 
 function getSelectedMPGAxis()
@@ -82,9 +96,9 @@ function handleAxisSelectionChange(modbusMPGEncoderCounts)
 	if ModbusMPG.mpgLastSelectedAxis ~= ModbusMPG.mpgSelectedAxis then
 		ModbusMPG.axisChanged = true
 		ModbusMPG.mpgLastSelectedAxis = ModbusMPG.mpgSelectedAxis
-		ModbusMPG.lastMPGEncoderCounts = modbusMPGEncoderCounts
-		ModbusMPG.lastMPGCountsMoved = modbusMPGEncoderCounts
-		ModbusMPG.machEncoderCounts = 0
+		lastMPGEncoderCounts = modbusMPGEncoderCounts
+		lastMPGCountsMoved = modbusMPGEncoderCounts
+		machEncoderCounts = 0
 	end
 end
 
@@ -92,11 +106,11 @@ end
 -- counts. this will continue the counts in the + or - direction "indefinitely" instead
 -- of rolling over to max/min size of 16-bit integer once the encoder count extent is reached.
 function processMPGMove(modbusMPGEncoderCounts)
-	local currentMachMPGEncCounts = ModbusMPG.machEncoderCounts
-	local newMachMPGEncCounts = currentMachMPGEncCounts + math.fmod((modbusMPGEncoderCounts - ModbusMPG.lastMPGEncoderCounts), 32700)
+	local currentMachMPGEncCounts = machEncoderCounts
+	local newMachMPGEncCounts = currentMachMPGEncCounts + math.fmod((modbusMPGEncoderCounts - lastMPGEncoderCounts), 32700)
 
-	if ModbusMPG.lastMPGEncoderCounts ~= modbusMPGEncoderCounts then
-		ModbusMPG.machEncoderCounts = newMachMPGEncCounts
+	if lastMPGEncoderCounts ~= modbusMPGEncoderCounts then
+		machEncoderCounts = newMachMPGEncCounts
 
 		-- there is a weird bug when switching axes while the other axis is still moving.
 		-- instead of finishing the last move and starting a new move, something reverts the last
@@ -106,31 +120,45 @@ function processMPGMove(modbusMPGEncoderCounts)
 			ModbusMPG.axisChanged = false
 			mc.mcMpgSetAxis(inst, 11, ModbusMPG.mpgSelectedAxis - 1)
 		else
-			if math.abs(newMachMPGEncCounts - ModbusMPG.lastMPGCountsMoved) < 100 then
-				mc.mcMpgMoveCounts(inst, 11, newMachMPGEncCounts - ModbusMPG.lastMPGCountsMoved)
+			if math.abs(newMachMPGEncCounts - lastMPGCountsMoved) < 100 then
+				mc.mcMpgMoveCounts(inst, 11, newMachMPGEncCounts - lastMPGCountsMoved)
 			end
 		end
 		
-		ModbusMPG.lastMPGCountsMoved = newMachMPGEncCounts
-		ModbusMPG.lastMPGEncoderCounts = newMachMPGEncCounts
+		lastMPGCountsMoved = newMachMPGEncCounts
+		lastMPGEncoderCounts = newMachMPGEncCounts
 	end
 end
 
-function ModbusMPG.RunModbusMPG() 
-	local modbusRunning = mc.mcRegGetValueString(modbusStatusReg) == "RUNNING"
-	modbusRunning = modbusRunning and mc.mcRegGetValue(modbusFunc0ErrorReg) == mc.MERROR_NOERROR
-	modbusRunning = (modbusRunning and mc.mcRegGetValue(modbusFunc1ErrorReg) == mc.MERROR_NOERROR) and 1 or 0
+function modbusIsRunning()
+	ModbusMPG.modbusRunning = mc.mcRegGetValueString(modbusStatusReg) == "RUNNING"
+	ModbusMPG.modbusRunning = ModbusMPG.modbusRunning and mc.mcRegGetValue(modbusFunc0ErrorReg) == mc.MERROR_NOERROR
+	ModbusMPG.modbusRunning = (ModbusMPG.modbusRunning and mc.mcRegGetValue(modbusFunc1ErrorReg) == mc.MERROR_NOERROR) and true or false
+end
 
+function ModbusMPG.restartModbusConnection()
+	local modbusCmdReg = mc.mcRegGetHandle(inst, "mbcntl/command")
+	mc.mcRegSetValueString(modbusCmdReg, "STOP")
+	mc.mcRegSetValueString(modbusCmdReg, "START")
+end
+
+function ModbusMPG.RunModbusMPG() 
 	--mc.mcSignalSetState(modbusStateReg, modbusRunning == 1)
 	--mc.mcRegSetValueLong(modbusRunningReg, modbusRunning)
+	modbusIsRunning()
 
-	if modbusRunning ~= 1 then return end
+	if not ModbusMPG.modbusRunning then return end
 
 	local mpgEnabled = mc.mcSignalGetState(mpgEnableReg)
 	local modbusMPGEncoderCounts = mc.mcRegGetValue(modbusMPGEncoderCountsReg)
 
 	getSelectedMPGAxis()
-	setMPGIncrement()
+	getMPGIncrement()
+
+	if lastMPGInc ~= ModbusMPG.mpgSelectedInc then
+		setMPGIncrement()
+		lastMPGInc = ModbusMPG.mpgSelectedInc
+	end
 
 	if tonumber(ModbusMPG.mpgSelectedAxis) > 0 and mpgEnabled == 1 then
 		handleAxisSelectionChange(modbusMPGEncoderCounts)	

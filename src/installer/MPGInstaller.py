@@ -311,16 +311,6 @@ class AppWindow(wx.Frame):
 				if not 'ModbusMPG' in node.text:
 					plc += node.text
 					node.text = plc
-		
-		for node in tree.iter('Property'):
-			if node.attrib['name'] == 'PMC Objects':
-				if not node.text == None:
-					pmc_objects = node.text.rstrip('\r\n').split(';')
-				else:
-					pmc_objects = []
-
-				if not 'MPG_Inputs' in pmc_objects:
-					node.text = ';'.join(obj for obj in pmc_objects) + 'MPG_Inputs'
 
 		tree.write(os.path.join(temp_dir, 'screen.xml'))
 		
@@ -335,13 +325,8 @@ class AppWindow(wx.Frame):
 		shutil.copy('ModbusMPG.lua', modules_dir)
 
 		# copy MPGWiz to wizards directory
-		#wizards_dir = os.path.join(mach_dir, 'Wizards')
-		#shutil.copy('MPGWiz.mcs', wizards_dir)
-
-		# copy MPG_Inputs.lua & .pmc to PMC directory
-		#pmc_dir = os.path.join(mach_dir, 'PMC')
-		#shutil.copy('MPG_Inputs.lua', pmc_dir)
-		#shutil.copy('MPG_Inputs.pmc', pmc_dir)
+		wizards_dir = os.path.join(mach_dir, 'Wizards')
+		shutil.copy('MPGWiz.mcs', wizards_dir)
 
 		# write the edited Machine.ini into the Mach4 Profiles directory
 		self.dict_to_machine_ini(ini_dict, ini_path)

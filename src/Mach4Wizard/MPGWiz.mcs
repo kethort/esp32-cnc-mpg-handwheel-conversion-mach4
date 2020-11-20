@@ -79,95 +79,30 @@ frame:Centre(wx.wxBOTH)
 
 inst = mc.mcGetInstance()
 
-local xAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT54)
-local yAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT55)
-local zAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT56)
-local aAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT57)
-local bAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT58)
-local cAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT59)
-local mpgInc1SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT61)
-local mpgInc2SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT62)
-local mpgInc3SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT63)
-
-local modbusStatusReg = mc.mcRegGetHandle(inst, "mbcntl/status")
-local modbusFunc0ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function0/rc") 
-local modbusFunc1ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function1/rc")
-
 local green = wx.wxColour(0, 255, 128)
+local red = wx.wxColour(255, 0, 0)
 local gray = wx.wxColour(224, 224, 224)
 
-lastSelectedAxis = 0
-currentSelectedAxis = -1
 lastSelectedInc = 0
-currentSelectedInc = -1
+lastSelectedAxis = -1
 lastState = -1
 currentState = 0
 
-function getMPGIncrement()
-	local mpgInc1Selected = mc.mcSignalGetState(mpgInc1SelReg) == 1
-	local mpgInc2Selected = mc.mcSignalGetState(mpgInc2SelReg) == 1
-	local mpgInc3Selected = mc.mcSignalGetState(mpgInc3SelReg) == 1
-
-	if mpgInc1Selected then
-		currentSelectedInc = 1
-	elseif mpgInc2Selected then
-		currentSelectedInc = 2
-	elseif mpgInc3Selected then 
-		currentSelectedInc = 3
-	end
-end
-
 function setMPGIncrement()
-	local mpgInc1Selected = mc.mcSignalGetState(mpgInc1SelReg) == 1
-	local mpgInc2Selected = mc.mcSignalGetState(mpgInc2SelReg) == 1
-	local mpgInc3Selected = mc.mcSignalGetState(mpgInc3SelReg) == 1
-
 	inc_1_btn:SetBackgroundColour(gray)
 	inc_2_btn:SetBackgroundColour(gray)
 	inc_3_btn:SetBackgroundColour(gray)
 	
-	if mpgInc1Selected then
+	if lastSelectedInc == 1 then
 		inc_1_btn:SetBackgroundColour(green)
-	elseif mpgInc2Selected then
+	elseif lastSelectedInc == 2 then
 		inc_2_btn:SetBackgroundColour(green)
-	elseif mpgInc3Selected then 
+	elseif lastSelectedInc == 3 then 
 		inc_3_btn:SetBackgroundColour(green)
 	end
 end
 
-function getSelectedMPGAxis()
-	local xAxisSelected = mc.mcSignalGetState(xAxisSelReg)
-	local yAxisSelected = mc.mcSignalGetState(yAxisSelReg)
-	local zAxisSelected = mc.mcSignalGetState(zAxisSelReg)
-	local aAxisSelected = mc.mcSignalGetState(aAxisSelReg)
-	local bAxisSelected = mc.mcSignalGetState(bAxisSelReg)
-	local cAxisSelected = mc.mcSignalGetState(cAxisSelReg)
-
-	currentSelectedAxis = 0
-
-	if xAxisSelected == 1 then
-		currentSelectedAxis = 1
-	elseif yAxisSelected == 1 then
-		currentSelectedAxis = 2
-	elseif zAxisSelected == 1 then
-		currentSelectedAxis = 3
-	elseif aAxisSelected == 1 then
-		currentSelectedAxis = 4
-	elseif bAxisSelected == 1 then
-		currentSelectedAxis = 5
-	elseif cAxisSelected == 1 then
-		currentSelectedAxis = 6
-	end
-end
-
 function setSelectedMPGAxis()
-	local xAxisSelected = mc.mcSignalGetState(xAxisSelReg)
-	local yAxisSelected = mc.mcSignalGetState(yAxisSelReg)
-	local zAxisSelected = mc.mcSignalGetState(zAxisSelReg)
-	local aAxisSelected = mc.mcSignalGetState(aAxisSelReg)
-	local bAxisSelected = mc.mcSignalGetState(bAxisSelReg)
-	local cAxisSelected = mc.mcSignalGetState(cAxisSelReg)
-
 	x_axis_btn:SetBackgroundColour(gray)
 	y_axis_btn:SetBackgroundColour(gray)
 	z_axis_btn:SetBackgroundColour(gray)
@@ -175,17 +110,17 @@ function setSelectedMPGAxis()
 	b_axis_btn:SetBackgroundColour(gray)
 	c_axis_btn:SetBackgroundColour(gray)
 
-	if xAxisSelected == 1 then
+	if ModbusMPG.mpgSelectedAxis == 1 then
 		x_axis_btn:SetBackgroundColour(green)
-	elseif yAxisSelected == 1 then
+	elseif ModbusMPG.mpgSelectedAxis == 2 then
 		y_axis_btn:SetBackgroundColour(green)
-	elseif zAxisSelected == 1 then
+	elseif ModbusMPG.mpgSelectedAxis == 3 then
 		z_axis_btn:SetBackgroundColour(green)
-	elseif aAxisSelected == 1 then
+	elseif ModbusMPG.mpgSelectedAxis == 4 then
 		a_axis_btn:SetBackgroundColour(green)
-	elseif bAxisSelected == 1 then
+	elseif ModbusMPG.mpgSelectedAxis == 5 then
 		b_axis_btn:SetBackgroundColour(green)
-	elseif cAxisSelected == 1 then
+	elseif ModbusMPG.mpgSelectedAxis == 6 then
 		c_axis_btn:SetBackgroundColour(green)
 	end
 end
@@ -203,59 +138,31 @@ function grayOutBtns()
 	inc_3_btn:SetBackgroundColour(gray)
 end
 
-function getStatus()
-	local modbusRunning = mc.mcRegGetValueString(modbusStatusReg) == "RUNNING"
-	modbusRunning = modbusRunning and mc.mcRegGetValue(modbusFunc0ErrorReg) == mc.MERROR_NOERROR
-	modbusRunning = (modbusRunning and mc.mcRegGetValue(modbusFunc1ErrorReg) == mc.MERROR_NOERROR) and true or false
-
-	if modbusRunning then
-		currentState = 1
-	else
-		currentState = 0
-	end	
-end
-
 function setStatusButton()
-	local modbusRunning = mc.mcRegGetValueString(modbusStatusReg) == "RUNNING"
-	modbusRunning = modbusRunning and mc.mcRegGetValue(modbusFunc0ErrorReg) == mc.MERROR_NOERROR
-	modbusRunning = (modbusRunning and mc.mcRegGetValue(modbusFunc1ErrorReg) == mc.MERROR_NOERROR) and true or false
-
-	if modbusRunning then
+	if ModbusMPG.modbusRunning then
 		connected_btn:SetBackgroundColour(green)
 		connected_btn:SetLabel("Connected")
 	else
-		connected_btn:SetBackgroundColour(gray)
+		connected_btn:SetBackgroundColour(red)
 		connected_btn:SetLabel("Disconnected")
 		grayOutBtns()
 	end
 end
 
-function restartModbusConnection()
-	local modbusCmdReg = mc.mcRegGetHandle(inst, "mbcntl/command")
-	mc.mcRegSetValueString(modbusCmdReg, "STOP")
-	mc.mcRegSetValueString(modbusCmdReg, "START")
-end
-
 frame:Connect(wx.wxEVT_UPDATE_UI, function(event)
-	getStatus()
-
-	if lastState ~= currentState then
-		lastState = currentState
+	if lastState ~= ModbusMPG.modbusRunning then
+		lastState = ModbusMPG.modbusRunning
 		setStatusButton()
 	end
 	
-	getSelectedMPGAxis()
-	
-	if lastSelectedAxis ~= currentSelectedAxis then
+	if lastSelectedAxis ~= ModbusMPG.mpgSelectedAxis then
 		setSelectedMPGAxis()
-		lastSelectedAxis = currentSelectedAxis
+		lastSelectedAxis = ModbusMPG.mpgSelectedAxis
 	end
 
-	getMPGIncrement()
-
-	if lastSelectedInc ~= currentSelectedInc then
-		lastSelectedInc = currentSelectedInc
-		setMPGIncrement()
+	if lastSelectedInc ~= ModbusMPG.mpgSelectedInc then
+		lastSelectedInc = ModbusMPG.mpgSelectedInc
+		setMPGIncrement(lastSelectedInc)
 	end
 
 	event:Skip()
@@ -266,7 +173,7 @@ frame:Connect(wx.wxEVT_CLOSE_WINDOW, function(event)
 end)
 
 reconnect_btn:Connect(wx.wxEVT_COMMAND_BUTTON_CLICKED, function(event)
-	restartModbusConnection()
+	 ModbusMPG.restartModbusConnection()
 	event:Skip()
 end)
 
