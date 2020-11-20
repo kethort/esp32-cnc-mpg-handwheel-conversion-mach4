@@ -42,10 +42,18 @@ https://github.com/tzapu/WiFiManager
 </p>
 
 4. Turn on the ESP32 MPG, open Mach4 and navigate to Diagnostic->Modbus in the File Menu.
-5. To connect or reconnect to the modbus device, press the stop button in the diagnostic window and then the play button. 
+5. To connect or reconnect to the modbus device, press the stop button in the diagnostic window and then the play button. <i>(Alternatively use the Wizard instead [step 6])</i>
 
 <p align="center">
   <img src="/img/modbus_diag.PNG" width="300"/>
+</p>
+
+6. This wizard is currently in beta and it's not recommended to run the Wizard while Mach4 is enabled.
+
+   The wizard can be accessed by opening the Wizard launcher in the Mach4 file menu. (Wizard->Select Wizard->MPGWiz.
+   
+<p align="center">
+  <img src="/img/wizard.PNG" width="300"/>
 </p>
  
 ## Parts List
