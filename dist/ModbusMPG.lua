@@ -51,7 +51,6 @@ function setMPGIncrement()
 		incVal = 0.1
 	end
 
-	mc.mcCntlSetLastError(inst, tostring(incVal))
 	mc.mcMpgSetInc(inst, 11, incVal)
 end
 
