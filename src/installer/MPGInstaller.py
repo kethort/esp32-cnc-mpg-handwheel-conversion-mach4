@@ -6,8 +6,10 @@ import shutil
 import zipfile
 import socket
 import xml.etree.ElementTree as et
+from subprocess import Popen, PIPE
 
 class AppWindow(wx.Frame):
+	MAC_VENDOR_ID = '86-1a-30'
 	dir_changed = False
 
 	def __init__(self):
@@ -72,7 +74,8 @@ class AppWindow(wx.Frame):
 
 		bSizer5.Add(self.m_staticText4, 0, wx.ALIGN_CENTER|wx.ALL, 5)
 
-		self.ip_address_entry = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+		ip_address = self.get_device_ip()
+		self.ip_address_entry = wx.TextCtrl(self, wx.ID_ANY, ip_address, wx.DefaultPosition, wx.DefaultSize, 0)
 		bSizer5.Add(self.ip_address_entry, 0, wx.ALL, 5)
 
 
@@ -95,6 +98,22 @@ class AppWindow(wx.Frame):
 
 		self.Show()
 		self.find_default_mach_installation()
+
+	def get_device_ip(self):
+		ip_addr = ''
+		pid = Popen(['arp', '-a'], stdout=PIPE)
+		cmd_out = pid.communicate()[0].decode('utf-8').split()
+
+		idx = -1
+		for i in cmd_out:
+			if self.MAC_VENDOR_ID in i:
+				break
+			idx += 1
+
+		if cmd_out[idx]:
+			ip_addr = cmd_out[idx]
+
+		return ip_addr
 
 	def find_default_mach_installation(self):
 		root_dir = os.path.abspath(os.sep)
