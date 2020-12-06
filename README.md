@@ -35,7 +35,7 @@ https://github.com/tzapu/WiFiManager
   <img src="/img/ip_address.PNG" width="300"/>
 </p>
 
-3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. 
+3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. (if the ESP32 device is already connected to the network, the IP address should auto-populate)
 
 <p align="center">
   <img src="/img/mpg_installer.PNG" width="300"/>
