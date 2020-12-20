@@ -35,7 +35,7 @@ https://github.com/tzapu/WiFiManager
   <img src="/img/ip_address.PNG" width="300"/>
 </p>
 
-3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. 
+3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. (if the ESP32 device is already connected to the network, the IP address should auto-populate)
 
 <p align="center">
   <img src="/img/mpg_installer.PNG" width="300"/>
@@ -48,9 +48,7 @@ https://github.com/tzapu/WiFiManager
   <img src="/img/modbus_diag.PNG" width="300"/>
 </p>
 
-6. This wizard is currently in beta and it's not recommended to run the Wizard while Mach4 is enabled.
-
-   The wizard can be accessed by opening the Wizard launcher in the Mach4 file menu. (Wizard->Select Wizard->MPGWiz)
+6. The wizard can be accessed by opening the Wizard launcher in the Mach4 file menu. (Wizard->Select Wizard->MPGWiz)
    
 <p align="center">
   <img src="/img/wizard.PNG" width="300"/>

@@ -88,7 +88,7 @@ lastSelectedAxis = -1
 lastState = -1
 currentState = 0
 
-function setMPGIncrement()
+function setSelectedMPGIncrement()
 	inc_1_btn:SetBackgroundColour(gray)
 	inc_2_btn:SetBackgroundColour(gray)
 	inc_3_btn:SetBackgroundColour(gray)
@@ -162,7 +162,7 @@ frame:Connect(wx.wxEVT_UPDATE_UI, function(event)
 
 	if lastSelectedInc ~= ModbusMPG.mpgSelectedInc then
 		lastSelectedInc = ModbusMPG.mpgSelectedInc
-		setMPGIncrement(lastSelectedInc)
+		setSelectedMPGIncrement(lastSelectedInc)
 	end
 
 	event:Skip()
