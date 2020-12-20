@@ -4,7 +4,7 @@ import os
 
 installer_script = os.path.join(os.getcwd(), 'src\\installer\\MPGInstaller.py')
 module_script = os.path.join(os.getcwd(), 'src\\Mach4Module\\ModbusMPG.lua')
-wizard_script = os.path.join(os.getcwd(), 'src\\Mach4Wizard\\MPGWiz.mcs')
+wizard_script = os.path.join(os.getcwd(), 'src\\Mach4Wizard\\MPGWiz.lua')
 global_regs_ini = os.path.join(os.getcwd(), 'src\\ini_settings\\gReg_ini_settings')
 modbus_ini = os.path.join(os.getcwd(), 'src\\ini_settings\\modbus_ini_settings')
 
