@@ -81,6 +81,3 @@ MPG PCB: <br>
 
 ## Demonstration
 https://www.youtube.com/watch?v=FvmKIaZbhRo
-
-## More info
-https://www.machsupport.com/forum/index.php?topic=43759.msg281820#msg281820
