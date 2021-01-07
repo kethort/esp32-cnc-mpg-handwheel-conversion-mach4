@@ -225,6 +225,9 @@ class AppWindow(wx.Frame):
 				print('failed to copy file \n {0}'.format(e))
 
 	def enable_plugin_in_ini(self, ini_dict, plugin_name):
+		test_val = ini_dict.get('Plugins', None)
+		if test_val is None:
+			ini_dict['Plugins'] = {}
 		ini_dict['Plugins'][plugin_name] = 1
 
 	def create_modbus_device(self, ini_dict, dev_name):
