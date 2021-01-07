@@ -1,4 +1,8 @@
-# MPG Handwheel Prototype Using ESP32 and Modbus TCP library
+# Mach4 Wireless (Wifi) MPG Handwheel Using ESP32 and Modbus TCP library
+
+<p align="center">
+  <img src="/img/mpg_esp32.jpg" width="700"/>
+</p>
 
 ## Required Arduino Libraries
 https://github.com/emelianov/modbus-esp8266 <br>
