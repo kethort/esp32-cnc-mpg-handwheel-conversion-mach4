@@ -4,6 +4,9 @@
   <img src="/img/mpg_esp32.jpg" width="700"/>
 </p>
 
+## Demonstration
+https://www.youtube.com/watch?v=FvmKIaZbhRo
+
 ## Required Arduino Libraries
 https://github.com/emelianov/modbus-esp8266 <br>
 https://github.com/madhephaestus/ESP32Encoder <br>
@@ -82,6 +85,3 @@ MPG PCB: <br>
     ESP32 Pin 15 -> Inc 1 <br>
     ESP32 Pin 21 -> Inc 2 <br>
     ESP32 Pin 22 -> Inc 3 <br> <br>
-
-## Demonstration
-https://www.youtube.com/watch?v=FvmKIaZbhRo
