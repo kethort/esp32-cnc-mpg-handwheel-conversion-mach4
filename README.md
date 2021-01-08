@@ -85,3 +85,11 @@ MPG PCB: <br>
     ESP32 Pin 15 -> Inc 1 <br>
     ESP32 Pin 21 -> Inc 2 <br>
     ESP32 Pin 22 -> Inc 3 <br> <br>
+    
+## Wiring an Ethernet Port
+W5500 Lite: <br>
+ESP32 Pin 23 -> MOSI <br>
+ESP32 Pin 19 -> MISO <br>
+ESP32 Pin 18 -> SCLK <br>
+ESP32 Pin 5  -> CS <br>
+ESP32 Pin 26 -> RST <br>
