@@ -19,7 +19,6 @@ mc.mcMpgSetRate(inst, 11, 100)
 mc.mcMpgSetCountsPerDetent(inst, 11, 4)
 
 local modbusStatusReg = mc.mcRegGetHandle(inst, "mbcntl/status")
-local modbusRunningReg = mc.mcRegGetHandle(inst, "gRegs0/ModbusRunning")
 local modbusFunc0ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function0/rc") 
 local modbusFunc1ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function1/rc")
 
@@ -142,8 +141,6 @@ function ModbusMPG.restartModbusConnection()
 end
 
 function ModbusMPG.RunModbusMPG() 
-	--mc.mcSignalSetState(modbusStateReg, modbusRunning == 1)
-	--mc.mcRegSetValueLong(modbusRunningReg, modbusRunning)
 	modbusIsRunning()
 
 	if not ModbusMPG.modbusRunning then return end
