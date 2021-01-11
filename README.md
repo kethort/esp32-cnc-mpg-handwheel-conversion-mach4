@@ -35,13 +35,13 @@ https://github.com/tzapu/WiFiManager
 </p>
 
 ## Mach4 Software Setup
-1. Launch the MPGInstaller.exe from the dist folder of the repo.
-2. Find the local IP address of the ESP32 (espressif). 
+1. Find the local IP address of the ESP32 (espressif). 
 
 <p align="center">
   <img src="/img/ip_address.PNG" width="300"/>
 </p>
 
+2. Launch the MPGInstaller.exe from the dist folder of the repo.
 3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. (if the ESP32 device is already connected to the network, the IP address should auto-populate)
 
 <p align="center">
