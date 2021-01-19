@@ -6,6 +6,18 @@
 #include <ESP32Encoder.h>
 //#include <Pangodream_18650_CL.h>
 
+//#define USE_ADC
+
+#ifdef USE_ADC
+#define ADC_DIV 40
+const int numReadings = 10;
+int readings[numReadings];      // the readings from the analog input
+int readIndex = 0;              // the index of the current reading
+int total = 0;                  // the running total
+int average = 0;                // the average
+int adc;
+#endif
+
 //#define STATIC_IP
 
 ModbusIP mb;
@@ -20,6 +32,10 @@ ESP32Encoder encoder;
 
 void setup() {
   Serial.begin(115200);
+
+  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+    readings[thisReading] = 0;
+  }
   
   WiFiManager wifiManager;
 
@@ -48,14 +64,47 @@ void setup() {
   encoder.attachFullQuad(2, 4);
   encoder.clearCount();
   mb.addHreg(55); // encoder counts modbus register
-  mb.addHreg(56); // battery level register
+#ifdef USE_ADC
+  mb.addHreg(56); // ADC register
+#endif
+}
+
+int smoothADCReading() {
+  // subtract the last reading:
+  total = total - readings[readIndex];
+  // read from the sensor:
+  readings[readIndex] = analogRead(33);
+  // add the reading to the total:
+  total = total + readings[readIndex];
+  // advance to the next position in the array:
+  readIndex++;
+
+  // if we're at the end of the array...
+  if (readIndex >= numReadings) {
+    readIndex = 0;
+  }
+
+  // return the average:
+  return(total / numReadings);
 }
 
 void loop() {
   //mb.Hreg(56, BL.getBatteryChargeLevel());
   
   mb.task();
+
+#ifdef USE_ADC
+  average = smoothADCReading();
   
+  // constrain the adc reading to values 0 - 100
+  adc = (average / ADC_DIV) - 2; 
+  
+  if (!(adc >= 0 && adc <= 100))
+    adc = 0;
+    
+  mb.Hreg(56, adc);
+#endif
+
   for(int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++)
   {
     // clear the encoder count if the axis input changes

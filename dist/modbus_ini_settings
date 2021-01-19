@@ -26,14 +26,14 @@ ReadAs=0
 InitialState=1
 ScanDenominator=1
 Res0=MPGEnc
-Res1=BattLvl
+Res1=ADC0
 [ModbusDevice/ModbusMPG/function0/MPGEnc]
 Desc=MPG Encoder Counts
 Type=128
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function0/BattLvl]
-Desc=Battery Charge Level
+[ModbusDevice/ModbusMPG/function0/ADC0]
+Desc=ADC Control Knob
 Type=128
 RegIndex=0
 BitIndex=0
