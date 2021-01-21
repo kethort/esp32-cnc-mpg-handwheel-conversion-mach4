@@ -62,11 +62,11 @@ https://github.com/tzapu/WiFiManager
 </p>
  
 ## Parts List
-1.  https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1
-2.  https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1
-3.  https://www.amazon.com/gp/product/B082XJXQS6/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1
-4.  https://www.amazon.com/gp/product/B07XG323G8/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1
-5.  https://www.amazon.com/Xiuxin-Development-Dual-Mode-Bluetooth-Antenna/dp/B079PVCF2G/ref=sxts_sxwds-bia-wc-rsf-lq2a1_0?cv_ct_cx=esp32&dchild=1&keywords=esp32&pd_rd_i=B079PVCF2G&pd_rd_r=a13a37f2-296c-44a8-9513-68ab5bfbd9ad&pd_rd_w=ehkKD&pd_rd_wg=YDw1j&pf_rd_p=52f9c563-bb87-44f4-9d9d-e1c03402d90f&pf_rd_r=R9PF5M9ACRSXKMZDT689&psc=1&qid=1611217599&sr=1-1-d3e58e83-6458-471c-a87e-175495b96a10
+1.  [MPG Handwheel(]https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1)
+2.  [Lipo Battery(]https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1)
+3.  [Lithium Battery Charger Module](https://www.amazon.com/gp/product/B082XJXQS6/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1)
+4.  [Boost Converter](https://www.amazon.com/gp/product/B07XG323G8/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1)
+5.  [ESP32](https://www.amazon.com/Xiuxin-Development-Dual-Mode-Bluetooth-Antenna/dp/B079PVCF2G/ref=sxts_sxwds-bia-wc-rsf-lq2a1_0?cv_ct_cx=esp32&dchild=1&keywords=esp32&pd_rd_i=B079PVCF2G&pd_rd_r=a13a37f2-296c-44a8-9513-68ab5bfbd9ad&pd_rd_w=ehkKD&pd_rd_wg=YDw1j&pf_rd_p=52f9c563-bb87-44f4-9d9d-e1c03402d90f&pf_rd_r=R9PF5M9ACRSXKMZDT689&psc=1&qid=1611217599&sr=1-1-d3e58e83-6458-471c-a87e-175495b96a10)
 
 ## Wiring
 battery -> TP4056 Charger Module -> XL6009 Boost Convert (3.3 to 5V) -> MPG Estop switch -> ESP32 VIN/GND <br> <br>
