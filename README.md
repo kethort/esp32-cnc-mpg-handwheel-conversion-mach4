@@ -61,7 +61,7 @@ https://github.com/tzapu/WiFiManager
   <img src="/img/wizard.PNG" width="300"/>
 </p>
  
-## Parts List (links)
+## Parts List (Amazon links)
 1.  [MPG Handwheel](https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1)
 2.  [Lipo Battery](https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1)
 3.  [Lithium Battery Charger Module](https://www.amazon.com/gp/product/B082XJXQS6/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1)
