@@ -145,7 +145,7 @@ function ModbusMPG.RunModbusMPG()
 
 	if not ModbusMPG.modbusRunning then return end
 
-	local mpgEnabled = mc.mcSignalGetState(mpgEnableReg)
+	local mpgEnabled = mc.mcSignalGetState(mpgEnableReg) ~= 0
 	local modbusMPGEncoderCounts = mc.mcRegGetValue(modbusMPGEncoderCountsReg)
 
 	getSelectedMPGAxis()
@@ -156,7 +156,7 @@ function ModbusMPG.RunModbusMPG()
 		lastMPGInc = ModbusMPG.mpgSelectedInc
 	end
 
-	if tonumber(ModbusMPG.mpgSelectedAxis) > 0 and mpgEnabled == 1 then
+	if tonumber(ModbusMPG.mpgSelectedAxis) > 0 and mpgEnabled then
 		handleAxisSelectionChange(modbusMPGEncoderCounts)	
 		processMPGMove(modbusMPGEncoderCounts)
 	end
