@@ -8,8 +8,6 @@
 ModbusIP mb;
 int regs[] = {1,  2,  3,  9,  10, 11, 4,  5,  6,  7}; 
 
-byte currentPin;
-
 ESP32Encoder encoder;
 
 #include "FS.h"
@@ -19,7 +17,7 @@ ESP32Encoder encoder;
 TFT_eSPI tft = TFT_eSPI();       
 
 // This is the file name used to store the touch coordinate
-// calibration data. Cahnge the name to start a new calibration.
+// calibration data. Change the name to start a new calibration.
 #define CALIBRATION_FILE "/TouchCalData4"
 
 // Set REPEAT_CAL to true instead of false to run calibration
@@ -29,6 +27,9 @@ TFT_eSPI tft = TFT_eSPI();
 
 #define AXISBUTTON_W 72
 #define AXISBUTTON_H 50
+
+#define NAVBUTTON_W 92
+#define NAVBUTTON_H 50
 
 #define XAXISBUTTON_X 5
 #define XAXISBUTTON_Y 35
@@ -57,20 +58,32 @@ TFT_eSPI tft = TFT_eSPI();
 #define INC3BUTTON_X 164
 #define INC3BUTTON_Y 195
 
-#define PREVBUTTON_X 5
-#define PREVBUTTON_Y 265
+#define MAINBUTTON_X 85
+#define MAINBUTTON_Y 265
 
-#define NEXTBUTTON_X 164
-#define NEXTBUTTON_Y 265
+#define DROBUTTON_X 72
+#define DROBUTTON_Y 75
 
-byte lastAxis;
-//byte currentAxis;
-byte lastInc;
-//byte currentInc;
+#define MPGBUTTON_X 72
+#define MPGBUTTON_Y 135
+
+#define SLIDERBUTTON_X 72
+#define SLIDERBUTTON_Y 195
+
+#define MPGEN 25
+
+//#define DEBUG
+
+byte lastAxis = 50;
+byte lastInc = 50;
+byte pageNum;
+float lastDRODecimal[6];
+
+#define LOOP_PERIOD 10   // DRO's update every 10 ms
+uint32_t updateTime = 0; // time for next update
 
 void setup(void)
 {
-  Serial.begin(115200);
   tft.init();
 
   // Set the rotation before we calibrate
@@ -82,20 +95,19 @@ void setup(void)
   // clear screen
   tft.fillScreen(TFT_BLACK);
 
-  drawAxisButtons();
-  drawIncButtons();
-  drawPrevNextButtons(); 
-
   WiFiManager wifiManager;
   wifiManager.autoConnect("MPG_Handwheel");
 
+#ifdef DEBUG
+  Serial.begin(115200);
   Serial.println("WiFi connected");  
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+#endif
   
   mb.server();
 
-  pinMode(25, INPUT_PULLUP);
+  pinMode(MPGEN, INPUT_PULLUP);
   
   for(int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++) {
     mb.addCoil(regs[i]); 
@@ -104,6 +116,12 @@ void setup(void)
   encoder.attachFullQuad(2, 4);
   encoder.clearCount();
   mb.addHreg(55); // encoder counts modbus register
+
+  for(int i = 99; i < 111; i++)
+    mb.addHreg(i);
+
+  drawMainPage();
+  updateTime = millis(); // Next update time
 }
 
 void loop() {
@@ -123,8 +141,25 @@ void loop() {
   } else {
     encoder.pauseCount();
   }
-  
-  getTouchPageTwo();
+
+  switch(pageNum) {
+    case 1:
+      getTouchMainPage();
+      break;
+    case 2:
+      if (updateTime <= millis()) {
+        updateTime = millis() + LOOP_PERIOD;
+        updateDROs();
+      }
+      getTouchDROPage();
+      break;
+    case 3:
+      getTouchMPGPage();
+      break;
+    case 4:
+      //getTouchSliderPage();
+      break;
+  }
 }
 
 void touch_calibrate() {
@@ -191,7 +226,7 @@ void touch_calibrate() {
   }
 }
 
-void getTouchPageTwo() {
+void getTouchMPGPage() {
   uint16_t x, y;
 
   if (tft.getTouch(&x, &y))
@@ -276,21 +311,188 @@ void getTouchPageTwo() {
         mb.Coil(regs[9], 1);
       }
     }
+
+    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
+      if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
+        drawMainPage();
+      }
+    }
   }
 }
 
-void drawPrevNextButtons() {
-   tft.fillRect(PREVBUTTON_X, PREVBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-   tft.setTextColor(TFT_BLACK);
-   tft.setTextSize(2);
-   tft.setTextDatum(MC_DATUM);
-   tft.drawString("<", PREVBUTTON_X + (AXISBUTTON_W / 2), PREVBUTTON_Y + (AXISBUTTON_H / 2));
+void getTouchMainPage() {
+  uint16_t x, y;
 
-   tft.fillRect(NEXTBUTTON_X, NEXTBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  if (tft.getTouch(&x, &y)) {
+    if ((x > DROBUTTON_X) && (x < (DROBUTTON_X + NAVBUTTON_W))) {
+      if ((y > DROBUTTON_Y) && (y <= (DROBUTTON_Y + NAVBUTTON_H))) {
+        drawDROPage();
+      }
+    }
+
+    if ((x > MPGBUTTON_X) && (x < (MPGBUTTON_X + NAVBUTTON_W))) {
+      if ((y > MPGBUTTON_Y) && (y <= (MPGBUTTON_Y + NAVBUTTON_H))) {
+        drawMPGPage();
+      }
+    }
+
+    if ((x > SLIDERBUTTON_X) && (x < (SLIDERBUTTON_X + NAVBUTTON_W))) {
+      if ((y > SLIDERBUTTON_Y) && (y <= (SLIDERBUTTON_Y + NAVBUTTON_H))) {
+        drawSliderPage();
+      }
+    }
+  }
+}
+
+void drawMainPage() {
+  pageNum = 1;
+  
+  tft.fillScreen(TFT_BLACK);
+  
+  char strBfr[80];
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  sprintf(strBfr, "IP: %s", WiFi.localIP().toString().c_str());
+  tft.drawString(strBfr, 120, 20); 
+
+  drawMainNavButtons();
+}
+
+/*
+hregs 99-110
+*/
+void drawDROValue(byte axisID, byte hreg1, byte hreg2, byte y_loc) {
+  int16_t droPrefix = mb.Hreg(hreg1);
+  int16_t droPostfix = mb.Hreg(hreg2);
+  float droDecimal = droPrefix + (droPostfix / 10000.0);
+
+  tft.setTextColor(TFT_WHITE);
+  tft.drawFloat(droDecimal, 4, 140, y_loc);  
+  lastDRODecimal[axisID] = droDecimal;  
+}
+
+void updateDROs() {
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(3);
+  tft.setTextDatum(MC_DATUM);
+
+  // erase the last value
+  tft.drawFloat(lastDRODecimal[0], 4, 140, 30); 
+  tft.drawFloat(lastDRODecimal[1], 4, 140, 70);
+  tft.drawFloat(lastDRODecimal[2], 4, 140, 110);
+  tft.drawFloat(lastDRODecimal[3], 4, 140, 150);
+  tft.drawFloat(lastDRODecimal[4], 4, 140, 190);
+  tft.drawFloat(lastDRODecimal[5], 4, 140, 230);
+
+  tft.setTextColor(TFT_WHITE);
+  tft.drawString("X: ", 40, 30);
+  tft.drawString("Y: ", 40, 70);
+  tft.drawString("Z: ", 40, 110);
+  tft.drawString("A: ", 40, 150);
+  tft.drawString("B: ", 40, 190);
+  tft.drawString("C: ", 40, 230);
+  
+  drawDROValue(0, 99, 100, 30);
+  drawDROValue(1, 101, 102, 70);
+  drawDROValue(2, 103, 104, 110);
+  drawDROValue(3, 105, 106, 150);
+  drawDROValue(4, 107, 108, 190);
+  drawDROValue(5, 109, 110, 230);
+}
+
+void drawDROPage() {
+  pageNum = 2;
+  tft.fillScreen(TFT_BLACK);
+  drawMainPageButton();
+}
+
+void getTouchDROPage() {
+  uint16_t x, y;
+
+  if (tft.getTouch(&x, &y)) {
+    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
+        if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
+          drawMainPage();
+        }
+      }
+  }
+}
+
+void drawMPGPage() {
+  pageNum = 3;
+
+  tft.fillScreen(TFT_BLACK);
+  drawAxisButtons();
+  drawIncButtons();
+  drawMainPageButton();
+
+  switch(lastAxis) {
+    case 0:
+      selectAxis(XAXISBUTTON_X, XAXISBUTTON_Y, "X");
+      break;
+    case 1:
+      selectAxis(YAXISBUTTON_X, YAXISBUTTON_Y, "Y");
+      break;
+    case 2:
+      selectAxis(ZAXISBUTTON_X, ZAXISBUTTON_Y, "Z");
+      break;
+    case 3:
+      selectAxis(AAXISBUTTON_X, AAXISBUTTON_Y, "A");
+      break;
+    case 4:
+      selectAxis(BAXISBUTTON_X, BAXISBUTTON_Y, "B");
+      break;
+    case 5:
+      selectAxis(CAXISBUTTON_X, CAXISBUTTON_Y, "C");
+      break;
+  }
+
+  switch(lastInc) {
+    case 7:
+      selectInc(INC1BUTTON_X, INC1BUTTON_Y, "0.001");
+      break;
+    case 8:
+      selectInc(INC2BUTTON_X, INC2BUTTON_Y, "0.01");
+      break;
+    case 9:
+      selectInc(INC3BUTTON_X, INC3BUTTON_Y, "0.1");
+      break;
+  }
+}
+
+void drawSliderPage() {
+  //pageNum = 4;
+
+  //tft.fillScreen(TFT_BLACK);
+}
+
+void drawMainNavButtons() {
+  tft.fillRect(DROBUTTON_X, DROBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("DRO's", DROBUTTON_X + (NAVBUTTON_W / 2), DROBUTTON_Y + (NAVBUTTON_H / 2)); 
+  
+  tft.fillRect(MPGBUTTON_X, MPGBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("MPG", MPGBUTTON_X + (NAVBUTTON_W / 2), MPGBUTTON_Y + (NAVBUTTON_H / 2)); 
+  
+  tft.fillRect(SLIDERBUTTON_X, SLIDERBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("Sliders", SLIDERBUTTON_X + (NAVBUTTON_W / 2), SLIDERBUTTON_Y + (NAVBUTTON_H / 2)); 
+}
+
+void drawMainPageButton() {
+   tft.fillRect(MAINBUTTON_X, MAINBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
    tft.setTextColor(TFT_BLACK);
    tft.setTextSize(2);
    tft.setTextDatum(MC_DATUM);
-   tft.drawString(">", NEXTBUTTON_X + (AXISBUTTON_W / 2), NEXTBUTTON_Y + (AXISBUTTON_H / 2));
+   tft.drawString("Main", MAINBUTTON_X + (AXISBUTTON_W / 2), MAINBUTTON_Y + (AXISBUTTON_H / 2));
 }
 
 void drawIncButtons() {
