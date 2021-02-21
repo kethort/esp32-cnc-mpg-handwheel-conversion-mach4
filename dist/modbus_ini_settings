@@ -1,7 +1,7 @@
 [ModbusDevice]
 [ModbusDevice/ModbusMPG]
 Type=2
-Interval=10
+Interval=5
 Retry=3
 Timeout=1000
 EnronMode32=0

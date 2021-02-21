@@ -65,6 +65,9 @@ class AppWindow(wx.Frame):
 
 		bSizer3.Add((100, 0), 1, wx.EXPAND, 5)
 
+		self.chkbx_display = wx.CheckBox(self, wx.ID_ANY, u"ILI9341 Display", wx.DefaultPosition, wx.DefaultSize, 0)
+		bSizer3.Add(self.chkbx_display, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+
 		fgSizer1.Add(bSizer3, 1, wx.EXPAND, 5)
 		
 		bSizer5 = wx.BoxSizer(wx.HORIZONTAL)
@@ -78,17 +81,14 @@ class AppWindow(wx.Frame):
 		self.ip_address_entry = wx.TextCtrl(self, wx.ID_ANY, ip_address, wx.DefaultPosition, wx.DefaultSize, 0)
 		bSizer5.Add(self.ip_address_entry, 0, wx.ALL, 5)
 
-
 		bSizer5.Add((0, 0), 1, wx.EXPAND, 5)
 		self.btn_install = wx.Button(self, wx.ID_ANY, 'Install', wx.DefaultPosition, wx.DefaultSize, 0)
 		bSizer5.Add(self.btn_install, 0, wx.ALL, 5)
-
 
 		fgSizer1.Add(bSizer5, 1, wx.EXPAND, 5)
 
 		self.SetSizer(fgSizer1)
 		self.Layout()
-
 		self.Centre(wx.BOTH)
 
 		# event binders
@@ -157,7 +157,6 @@ class AppWindow(wx.Frame):
 					for prop in properties_dict: 
 						out_file.write('{0}={1}\n'.format(prop, properties_dict[prop]))
 	
-
 	def machine_ini_to_dict(self, ini_loc):
 		main_dict = {}
 		nested_dict = {}
@@ -276,30 +275,36 @@ class AppWindow(wx.Frame):
 		if self.mach_is_running():
 			return
 
-		self.backup_machine_ini(ini_path, backup_path)
-
-		ini_dict = self.machine_ini_to_dict(ini_path)
-		 
-		#  enable modbus and regfile plugins
-		self.enable_plugin_in_ini(ini_dict, 'mcRegfile')
-		self.enable_plugin_in_ini(ini_dict, 'mcModbus')
-
-		# create modbus device
-		self.create_modbus_device(ini_dict, 'ModbusMPG')
-
-		# update ini_dict with modbus device settings from file
-		modbus_ini_dict = self.machine_ini_to_dict('modbus_ini_settings')
-		ini_dict.update(modbus_ini_dict)
-
-		self.create_global_registers(ini_dict)
-
-		# validate IP address and add to ini_dict
+		# validate IP address 
 		ip_addr = self.ip_address_entry.GetValue().strip()
 
 		if not self.is_valid_ipv4_address(ip_addr):
 			wx.MessageBox("Invalid IP Address Entered! \n Aborting Installation.", "Error", wx.OK)
 			return
 
+		self.backup_machine_ini(ini_path, backup_path)
+
+		ini_dict = self.machine_ini_to_dict(ini_path)
+		 
+		#  enable modbus, regfile and LUA plugins
+		self.enable_plugin_in_ini(ini_dict, 'mcRegfile')
+		self.enable_plugin_in_ini(ini_dict, 'mcModbus')
+		self.enable_plugin_in_ini(ini_dict, 'mcLua')
+
+		# create modbus device
+		self.create_modbus_device(ini_dict, 'ModbusMPG')
+
+		# update ini_dict with modbus device settings from file
+		modbus_ini_dict = {}
+		if self.chkbx_display.IsChecked():
+			modbus_ini_dict = self.machine_ini_to_dict('modbus_ini_settings_display')
+		else:
+			modbus_ini_dict = self.machine_ini_to_dict('modbus_ini_settings')
+		ini_dict.update(modbus_ini_dict)
+
+		#self.create_global_registers(ini_dict)
+
+		# add ip address to ini dict
 		ini_dict['ModbusDevice/ModbusMPG']['IPAddr'] = ip_addr
 
 		# disable MPG 11 in Machine.ini
@@ -321,18 +326,30 @@ class AppWindow(wx.Frame):
 			zip_ref.extractall(temp_dir)
 
 		# programmatically write code in the Screen Load and PLC Scripts to connect the ModbusMPG module
-		screen_load = '\n--ModbusMPG module\npackage.loaded.ModbusMPG = nil\nModbusMPG = require \"ModbusMPG\"\n'
-		plc = 'ModbusMPG.RunModbusMPG()\n' 
+		screen_load = '\n\n--ModbusMPG module\npackage.loaded.ModbusMPG = nil\nModbusMPG = require \"ModbusMPG\"\n'
+		plc = '\n\nModbusMPG.RunModbusMPG()\n' 
 		tree = et.parse(os.path.join(temp_dir, 'screen.xml'))
-		
-		for node in tree.iter('Event'):    
+		root = tree.getroot()
+
+		for node in tree.iter('Property'):
+			if node.attrib['name'] == 'PLC Interval':
+				node.text = '5'
+				break
+
+		if self.chkbx_display.IsChecked():
+			ini_settings = open('update_plc')
+			plc += ini_settings.read()
+			ini_settings = open('update_screen_load')
+			screen_load += ini_settings.read()
+
+		for node in tree.iter('Event'): 		
 			if node.attrib['name'] == 'Screen Load Script':
 				if not 'ModbusMPG' in node.text:
 					node.text += screen_load
 			if node.attrib['name'] == 'PLC Script':
 				if not 'ModbusMPG' in node.text:
-					plc += node.text
-					node.text = plc
+					node.text += plc
+				break
 
 		tree.write(os.path.join(temp_dir, 'screen.xml'))
 		

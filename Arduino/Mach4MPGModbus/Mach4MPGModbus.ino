@@ -4,11 +4,7 @@
 #include <WiFiManager.h> 
 #include <ModbusIP_ESP8266.h>
 #include <ESP32Encoder.h>
-//#include <Pangodream_18650_CL.h>
 
-//#define USE_ADC
-
-#ifdef USE_ADC
 #define ADC_DIV 40
 const int numReadings = 10;
 int readings[numReadings];      // the readings from the analog input
@@ -27,8 +23,6 @@ int pins[] = {13, 14, 27, 32, 35, 34, 25, 15, 21, 22};
 byte currentPin;
 
 ESP32Encoder encoder;
-
-//Pangodream_18650_CL BL(36, 1.7, 50); // battery voltage ADC input pin 36
 
 void setup() {
   Serial.begin(115200);
@@ -64,9 +58,7 @@ void setup() {
   encoder.attachFullQuad(2, 4);
   encoder.clearCount();
   mb.addHreg(55); // encoder counts modbus register
-#ifdef USE_ADC
   mb.addHreg(56); // ADC register
-#endif
 }
 
 int smoothADCReading() {
@@ -89,11 +81,8 @@ int smoothADCReading() {
 }
 
 void loop() {
-  //mb.Hreg(56, BL.getBatteryChargeLevel());
-  
   mb.task();
 
-#ifdef USE_ADC
   average = smoothADCReading();
   
   // constrain the adc reading to values 0 - 100
@@ -103,7 +92,6 @@ void loop() {
     adc = 0;
     
   mb.Hreg(56, adc);
-#endif
 
   for(int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++)
   {

@@ -1,0 +1,18 @@
+
+axisID = 0
+droRegsPos = 1
+
+axisDRORegs = {
+	[1] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO0'),
+	[2] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO1'),
+	[3] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO2'),
+	[4] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO3'),
+	[5] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO4'),
+	[6] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO5'),
+	[7] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO6'),
+	[8] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO7'),
+	[9] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO8'),
+	[10] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO9'),
+	[11] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO10'),
+	[12] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO11')
+}

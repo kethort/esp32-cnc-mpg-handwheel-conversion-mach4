@@ -1,0 +1,24 @@
+
+local axisPos = mc.mcAxisGetPos(inst, axisID)
+axisPos = tonumber(string.format('%0.4f', tostring(axisPos)))
+
+local axisPosPrefix = 0
+if axisPos < 0 then
+	axisPosPrefix = math.ceil(axisPos)
+else 
+	axisPosPrefix = math.floor(axisPos)
+end
+
+local axisPosDecimal = (axisPos - axisPosPrefix) * 10000
+
+mc.mcRegSetValueLong(axisDRORegs[droRegsPos], axisPosPrefix)
+droRegsPos = droRegsPos + 1
+mc.mcRegSetValueLong(axisDRORegs[droRegsPos], axisPosDecimal)
+
+droRegsPos = droRegsPos + 1
+axisID = axisID + 1
+
+if droRegsPos > #axisDRORegs then
+	droRegsPos = 1
+	axisID = 0
+end
