@@ -13,8 +13,15 @@ ESP32Encoder encoder;
 #include "FS.h"
 #include <SPI.h>
 #include <TFT_eSPI.h> 
+#include <TFT_eSPI_TouchUI.h>
 
 TFT_eSPI tft = TFT_eSPI();       
+TFT_eSPI_TouchUI slider[3];
+
+#define SLIDER_MIN 0
+#define SLIDER_MAX 100
+#define SLIDER_BTN_W 20
+#define SLIDER_BAR_L 180
 
 // This is the file name used to store the touch coordinate
 // calibration data. Change the name to start a new calibration.
@@ -122,6 +129,8 @@ void setup(void)
 
   drawMainPage();
   updateTime = millis(); // Next update time
+
+  slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 42, 50, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
 }
 
 void loop() {
@@ -157,7 +166,7 @@ void loop() {
       getTouchMPGPage();
       break;
     case 4:
-      //getTouchSliderPage();
+      getTouchSliderPage();
       break;
   }
 }
@@ -168,7 +177,7 @@ void touch_calibrate() {
 
   // check file system exists
   if (!SPIFFS.begin()) {
-    Serial.println("Formating file system");
+    Serial.println("Formatting file system");
     SPIFFS.format();
     SPIFFS.begin();
   }
@@ -311,7 +320,7 @@ void getTouchMPGPage() {
         mb.Coil(regs[9], 1);
       }
     }
-
+  
     if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
       if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
         drawMainPage();
@@ -359,9 +368,6 @@ void drawMainPage() {
   drawMainNavButtons();
 }
 
-/*
-hregs 99-110
-*/
 void drawDROValue(byte axisID, byte hreg1, byte hreg2, byte y_loc) {
   int16_t droPrefix = mb.Hreg(hreg1);
   int16_t droPostfix = mb.Hreg(hreg2);
@@ -462,9 +468,31 @@ void drawMPGPage() {
 }
 
 void drawSliderPage() {
-  //pageNum = 4;
+  pageNum = 4;
 
-  //tft.fillScreen(TFT_BLACK);
+  tft.fillScreen(TFT_BLACK);
+
+  slider[0].drawSliderH(0);
+  
+  drawMainPageButton();
+}
+
+void getTouchSliderPage() {
+  uint16_t x, y;
+
+  if (tft.getTouch(&x, &y)) {
+    if (slider[0].containsH(x, y)) {
+      int16_t value = slider[0].getValueH(x); 
+      slider[0].drawSliderH(value);
+    }
+    
+    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
+      if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
+        slider[0].drawSliderH(100);
+        drawMainPage();
+      }
+    }
+  }
 }
 
 void drawMainNavButtons() {
