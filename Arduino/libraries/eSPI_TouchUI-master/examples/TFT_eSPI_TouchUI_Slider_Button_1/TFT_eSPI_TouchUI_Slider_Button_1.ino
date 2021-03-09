@@ -1,9 +1,10 @@
 /*    
-   Example of drawing a "slider controller" and using
-   the touch screen to change it's state (for 480x320 px).
+   Example of drawing a  "ON/OFF switch" and using
+   the touch screen to change it's state. 
    
    This libary introduce sevaral knob styles
-   Based on the popular Bodmer's eSPI TFT Libary.
+
+   Based on the popular Bodmer's eSPI TFT Libary for ESP8266 and ESP32S
    
    Touch handling for XPT2046 based screens is handled by
    the TFT_eSPI library.
@@ -13,7 +14,6 @@
    *** Created by JLGOASIS 1/08/18 ***
 */
 
-// Calibration data is stored in SPIFFS so we need to include it
 #include "FS.h"
 #include <SPI.h>
 #include <TFT_eSPI.h> // Hardware-specific library
@@ -25,7 +25,7 @@ TFT_eSPI tft = TFT_eSPI();
 
 // This is the file name used to store the touch coordinate
 // calibration data. Cahnge the name to start a new calibration.
-#define CALIBRATION_FILE "/TouchCalData9"
+#define CALIBRATION_FILE "/TouchCalData0"
 
 // Set REPEAT_CAL to true instead of false to run calibration
 // again, otherwise it will only be done once.
@@ -33,28 +33,19 @@ TFT_eSPI tft = TFT_eSPI();
 #define REPEAT_CAL false
 
 // Invoke the TFT_eSPI Slider class and create all the slider objects
-TFT_eSPI_TouchUI slider[2];
+TFT_eSPI_TouchUI button[3];
 
-uint16_t outlineColor[5] = {TFT_BLUE, TFT_WHITE, TFT_BLUE, TFT_YELLOW, TFT_YELLOW};
-uint16_t fillColor[5] = {TFT_RED, TFT_GREEN, TFT_BLUE, TFT_ORANGE, TFT_BLACK};
-uint16_t nofillColor[5] = {TFT_DARKGREY, TFT_BLACK, TFT_CYAN, TFT_BLACK, TFT_ORANGE};
-int8_t pos[5] = {-1,0,10,15,25};
 
-#define SLIDER_MIN 0
-#define SLIDER_MAX 100
-#define SLIDER_BTN_W 20
-#define SLIDER_BAR_L 180
-
-//------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
 void setup(void) {
-  //Serial.begin(115200);
-  //Serial.println();
+  Serial.begin(115200);
+  Serial.println();
+
 
   tft.init();
 
   // Set the rotation before we calibrate
-  tft.setRotation(0);
+  tft.setRotation(2);
 
   // call screen calibration
   touch_calibrate();
@@ -64,31 +55,19 @@ void setup(void) {
 
   tft.fillRect(0, 0, tft.width(), 20, TFT_BLUE);
   tft.setTextColor(TFT_WHITE, TFT_BLUE);
-  tft.drawCentreString("SLIDER TEST", tft.width() / 2, 2, 2);
+  tft.drawCentreString("SLIDER BUTTON TEST", tft.width() / 2, 2, 2);
 
-  tft.setFreeFont(&FreeSans9pt7b);
+  tft.setFreeFont(&FreeSans12pt7b);
 
-  // &tft, min value, max value, x, y , w , l, outline color, fill color, background color, knob type, show value (-1 or < 0: No show value, 0: Automatic position, > 0: fix position) .
-  slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 42, 50, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
-  slider[0].drawSliderH(0);
-
-  slider[1].initSliderV(&tft, SLIDER_MIN, SLIDER_MAX, 30, 100, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_BLUE, TFT_BLACK, 1, 0);
-  slider[1].drawSliderV(0);
-  
-  /*
-  for (uint8_t i = 0; i < 5; i++) {
+  for (uint8_t i = 0; i < 3; i++) {
     // Init parameters:
-    // &tft, min value, max value, x, y , w , l,outline color, fill color, nofill color, background color, knob type, show value (-1 or < 0: No show value, 0: Automatic position, > 0: fix position) .
-    slider[i].initSliderH(&tft, 0, 100, 5, , 30, 220, outlineColor[i], fillColor[i], nofillColor[i], TFT_BLACK, i, pos[i]);
-    slider[i].drawSliderH(0);
-    slider[i + 5].initSliderV(&tft, 100, 20 + i * 60, 280, 30, 140, outlineColor[i], fillColor[i], nofillColor[i], TFT_BLACK, i, pos[i]);
-    slider[i + 5].drawSliderV(0);
+    // &tft, x, y , w, h, outline color, fill color, on color, off color, knob type, label ON/OFF
+    button[i].initButtonS(&tft, 80, 80 + i * 80, 120, 60, TFT_DARKGREY, TFT_GREEN, TFT_RED, i, true);
+    button[i].drawButtonS(0);
   }
-  */
 }
 
 
-//------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------
 void loop() {
   uint16_t t_x, t_y; // To store the touch coordinates
@@ -96,36 +75,19 @@ void loop() {
   // Pressed will be set true is there is a valid touch on the screen
   boolean pressed = tft.getTouch(&t_x, &t_y);
 
-  // Slider Horizontal Examples
-  if (pressed && slider[0].containsH(t_x, t_y)) {
-    int16_t value = slider[0].getValueH(t_x); // get the x Value
-    slider[0].drawSliderH(value);
-  }
-  
-  /*
-  for (uint8_t i = 0; i < 5; i++) {
-    if (pressed && slider[0].containsH(t_x, t_y)) {
-      int16_t value = slider[0].getValueH(t_x); // get the x Value
-      slider[0].drawSliderH(value);
+  for (uint8_t i = 0; i < 3; i++) {
+    // Check if any key coordinate boxes contain the touch coordinates
+    if (pressed && button[i].contains(t_x, t_y)) {
+      button[i].press(true);  // tell the button it is pressed
+    } else {
+      button[i].press(false);  // tell the button it is NOT pressed
     }
-  }
-  */
 
-  // Slider Vertical Examples
-  if (pressed && slider[1].containsV(t_x, t_y)) {
-    int16_t value = slider[1].getValueV(t_y); // get the y Value
-    slider[1].drawSliderV(value);
+    if (button[i].justPressedOn(t_x)) button[i].drawButtonS(true);    // draw
+    if (button[i].justPressedOff(t_x)) button[i].drawButtonS(false);  // draw invert
   }
-
-/*
-  for (byte i = 5; i < 10; i++) {
-    if (pressed && slider[i].containsV(t_x, t_y)) {
-      int16_t value = slider[i].getValueV(t_y); // get de y Value
-      slider[i].drawSliderV(value);
-    }
-  }
-*/
 }
+
 
 
 
@@ -137,7 +99,7 @@ void touch_calibrate() {
 
   // check file system exists
   if (!SPIFFS.begin()) {
-    //Serial.println("Formatting file system");
+    Serial.println("Formating file system");
     SPIFFS.format();
     SPIFFS.begin();
   }
@@ -193,3 +155,4 @@ void touch_calibrate() {
     }
   }
 }
+

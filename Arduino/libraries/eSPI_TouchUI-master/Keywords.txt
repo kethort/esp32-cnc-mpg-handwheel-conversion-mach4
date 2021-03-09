@@ -1,0 +1,32 @@
+
+TFT_eSPI_TouchUI	KEYWORD1
+
+initButton	KEYWORD2
+initButtonUL	KEYWORD2
+drawButton	KEYWORD2
+
+initButtonG	KEYWORD2
+initButtonGUL	KEYWORD2
+drawButtonG	KEYWORD2
+
+contains	KEYWORD2
+press		KEYWORD2
+isPressed	KEYWORD2
+justPressed	KEYWORD2
+justReleased	KEYWORD2
+
+initButtonS	KEYWORD2
+drawButtonS	KEYWORD2
+justPressedOn	KEYWORD2
+justPressedOff	KEYWORD2
+
+initSliderH	KEYWORD2
+drawSliderH	KEYWORD2
+containsH	KEYWORD2
+getValueH	KEYWORD2
+initSliderV	KEYWORD2
+drawSliderV	KEYWORD2
+containsV	KEYWORD2
+getValueV	KEYWORD2
+
+
