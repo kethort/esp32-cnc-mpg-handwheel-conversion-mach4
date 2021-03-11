@@ -6,7 +6,7 @@
 #include <ESP32Encoder.h>
 
 ModbusIP mb;
-int regs[] = {1,  2,  3,  9,  10, 11, 4,  5,  6,  7}; 
+int regs[] = {1,  2,  3,  9,  10, 11, 4,  5,  6,  7, 12, 13, 14}; 
 
 ESP32Encoder encoder;
 
@@ -83,6 +83,7 @@ TFT_eSPI_TouchUI slider[3];
 
 byte lastAxis = 50;
 byte lastInc = 50;
+byte lastSlider = 50;
 byte pageNum;
 float lastDRODecimal[6];
 
@@ -123,14 +124,14 @@ void setup(void)
   encoder.attachFullQuad(2, 4);
   encoder.clearCount();
   mb.addHreg(55); // encoder counts modbus register
-
-  for(int i = 99; i < 111; i++)
+  
+  for(int i = 99; i < 114; i++)
     mb.addHreg(i);
 
   drawMainPage();
   updateTime = millis(); // Next update time
 
-  slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 42, 50, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
+  slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 40, 80, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
 }
 
 void loop() {
@@ -166,6 +167,12 @@ void loop() {
       getTouchMPGPage();
       break;
     case 4:
+      /*
+      if (updateTime <= millis()) {
+        updateTime = millis() + LOOP_PERIOD;
+        updateSlider();
+      }
+      */
       getTouchSliderPage();
       break;
   }
@@ -467,13 +474,65 @@ void drawMPGPage() {
   }
 }
 
+void selectSlider(int32_t x, int32_t y, const char *sliderName) {
+  drawSliderButtons();
+  tft.fillRect(x, y, AXISBUTTON_W, AXISBUTTON_H, TFT_GREEN);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString(sliderName, x + (AXISBUTTON_W / 2), y + (AXISBUTTON_H / 2));
+}
+
+void updateSlider(int16_t sliderVal) {
+  int16_t regVal;
+    
+  switch(lastSlider) {
+    case 10:
+      mb.Hreg(111, sliderVal);
+      break;
+    case 11:
+      mb.Hreg(112, sliderVal);
+      break;
+    case 12:
+      mb.Hreg(113, sliderVal);
+      break;
+  }
+
+  //slider[0].drawSliderH(regVal);
+}
+
+void drawSliderButtons() {
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("FeedRate Sliders:", 120, 20);
+   
+  tft.fillRect(INC1BUTTON_X, INC1BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("FRO%", INC1BUTTON_X + (AXISBUTTON_W / 2), INC1BUTTON_Y + (AXISBUTTON_H / 2));
+  
+  tft.fillRect(INC2BUTTON_X, INC2BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("RRO%", INC2BUTTON_X + (AXISBUTTON_W / 2), INC2BUTTON_Y + (AXISBUTTON_H / 2));
+  
+  tft.fillRect(INC3BUTTON_X, INC3BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("SRO%", INC3BUTTON_X + (AXISBUTTON_W / 2), INC3BUTTON_Y + (AXISBUTTON_H / 2));
+}
+
 void drawSliderPage() {
   pageNum = 4;
-
+  
   tft.fillScreen(TFT_BLACK);
-
   slider[0].drawSliderH(0);
   
+  drawSliderButtons();
   drawMainPageButton();
 }
 
@@ -484,6 +543,46 @@ void getTouchSliderPage() {
     if (slider[0].containsH(x, y)) {
       int16_t value = slider[0].getValueH(x); 
       slider[0].drawSliderH(value);
+      updateSlider(value);
+    }
+
+    if ((x > INC1BUTTON_X) && (x < (INC1BUTTON_X + AXISBUTTON_W))) {
+      if ((y > INC1BUTTON_Y) && (y <= (INC1BUTTON_Y + AXISBUTTON_H))) {
+        selectSlider(INC1BUTTON_X, INC1BUTTON_Y, "FRO%"); 
+        int16_t regVal = mb.Hreg(111);
+        slider[0].drawSliderH(100);
+        slider[0].drawSliderH(0);
+        slider[0].drawSliderH(regVal);
+        mb.Coil(regs[lastSlider], 0);
+        lastSlider = 10;
+        mb.Coil(regs[10], 1);
+      }
+    }
+
+    if ((x > INC2BUTTON_X) && (x < (INC2BUTTON_X + AXISBUTTON_W))) {
+      if ((y > INC2BUTTON_Y) && (y <= (INC2BUTTON_Y + AXISBUTTON_H))) {
+        selectSlider(INC2BUTTON_X, INC2BUTTON_Y, "RRO%");
+        int16_t regVal = mb.Hreg(112);
+        slider[0].drawSliderH(100);
+        slider[0].drawSliderH(0);
+        slider[0].drawSliderH(regVal);
+        mb.Coil(regs[lastSlider], 0);
+        lastSlider = 11;
+        mb.Coil(regs[11], 1);
+      }
+    }
+
+    if ((x > INC3BUTTON_X) && (x < (INC3BUTTON_X + AXISBUTTON_W))) {
+      if ((y > INC3BUTTON_Y) && (y <= (INC3BUTTON_Y + AXISBUTTON_H))) {
+        selectSlider(INC3BUTTON_X, INC3BUTTON_Y, "SRO%");
+        int16_t regVal = mb.Hreg(113);
+        slider[0].drawSliderH(100);
+        slider[0].drawSliderH(0);
+        slider[0].drawSliderH(regVal);
+        mb.Coil(regs[lastSlider], 0);
+        lastSlider = 12;
+        mb.Coil(regs[12], 1);
+      }
     }
     
     if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
