@@ -16,107 +16,6 @@ Func0=function0
 Func1=function1
 Func2=function2
 [ModbusDevice/ModbusMPG/function0]
-Desc=readHregs
-Type=4
-SlaveAddr=1
-MbAddr=55
-NbrRegs=2
-BitPack=0
-Bits=0
-ReadAs=0
-InitialState=1
-ScanDenominator=1
-Res0=MPGEnc
-Res1=ADC0
-[ModbusDevice/ModbusMPG/function0/MPGEnc]
-Desc=MPG Encoder Counts
-Type=128
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function0/ADC0]
-Desc=ADC Control Knob
-Type=128
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1]
-Desc=readCoils
-Type=0
-SlaveAddr=1
-MbAddr=1
-NbrRegs=11
-BitPack=0
-Bits=0
-ReadAs=0
-InitialState=1
-ScanDenominator=1
-Res0=XSel
-Res1=YSel
-Res2=ZSel
-Res3=Enable
-Res4=Inc1
-Res5=Inc2
-Res6=Inc3
-Res7=N/A
-Res8=ASel
-Res9=BSel
-Res10=CSel
-[ModbusDevice/ModbusMPG/function1/XSel]
-Desc=X Axis Selector
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/YSel]
-Desc=Y Axis Selector
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/ZSel]
-Desc=Z Axis Selector
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/Enable]
-Desc=MPG Enable
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/Inc1]
-Desc=MPG Inc 1
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/Inc2]
-Desc=MPG Inc 2
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/Inc3]
-Desc=MPG Inc 3
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/N]
-[ModbusDevice/ModbusMPG/function1/N/A]
-Desc=N/A
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/ASel]
-Desc=A Axis Selector
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/BSel]
-Desc=B Axis Selector
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function1/CSel]
-Desc=C Axis Selector
-Type=1
-RegIndex=0
-BitIndex=0
-[ModbusDevice/ModbusMPG/function2]
 Desc=writeHregs
 Type=7
 SlaveAddr=1
@@ -139,63 +38,194 @@ Res8=axisDRO8
 Res9=axisDRO9
 Res10=axisDRO10
 Res11=axisDRO11
-[ModbusDevice/ModbusMPG/function2/axisDRO0]
+[ModbusDevice/ModbusMPG/function0/axisDRO0]
 Desc=axisDRO0
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO1]
+[ModbusDevice/ModbusMPG/function0/axisDRO1]
 Desc=axisDRO1
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO2]
+[ModbusDevice/ModbusMPG/function0/axisDRO2]
 Desc=axisDRO2
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO3]
+[ModbusDevice/ModbusMPG/function0/axisDRO3]
 Desc=axisDRO3
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO4]
+[ModbusDevice/ModbusMPG/function0/axisDRO4]
 Desc=axisDRO4
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO5]
+[ModbusDevice/ModbusMPG/function0/axisDRO5]
 Desc=axisDRO5
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO6]
+[ModbusDevice/ModbusMPG/function0/axisDRO6]
 Desc=axisDRO6
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO7]
+[ModbusDevice/ModbusMPG/function0/axisDRO7]
 Desc=axisDRO7
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO8]
+[ModbusDevice/ModbusMPG/function0/axisDRO8]
 Desc=axisDRO8
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO9]
+[ModbusDevice/ModbusMPG/function0/axisDRO9]
 Desc=axisDRO9
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO10]
+[ModbusDevice/ModbusMPG/function0/axisDRO10]
 Desc=axisDRO10
 Type=256
 RegIndex=0
 BitIndex=0
-[ModbusDevice/ModbusMPG/function2/axisDRO11]
+[ModbusDevice/ModbusMPG/function0/axisDRO11]
 Desc=axisDRO11
 Type=256
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1]
+Desc=readHregs
+Type=4
+SlaveAddr=1
+MbAddr=55
+NbrRegs=4
+BitPack=0
+Bits=0
+ReadAs=0
+InitialState=1
+ScanDenominator=1
+Res0=MPGEnc
+Res1=Slider1
+Res2=Slider2
+Res3=Slider3
+[ModbusDevice/ModbusMPG/function1/MPGEnc]
+Desc=MPG Encoder Counts
+Type=128
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/Slider1]
+Desc=Slider 1 Value
+Type=128
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/Slider2]
+Desc=Slider 2 Value
+Type=128
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function1/Slider3]
+Desc=Slider 3 Value
+Type=128
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2]
+Desc=readCoils
+Type=0
+SlaveAddr=1
+MbAddr=1
+NbrRegs=14
+BitPack=0
+Bits=0
+ReadAs=0
+InitialState=1
+ScanDenominator=1
+Res0=XSel
+Res1=YSel
+Res2=ZSel
+Res3=Enable
+Res4=Inc1
+Res5=Inc2
+Res6=Inc3
+Res7=N/A
+Res8=ASel
+Res9=BSel
+Res10=CSel
+Res11=Slider1
+Res12=Slider2
+Res13=Slider3
+[ModbusDevice/ModbusMPG/function2/XSel]
+Desc=X Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/YSel]
+Desc=Y Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/ZSel]
+Desc=Z Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/Enable]
+Desc=MPG Enable
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/Inc1]
+Desc=MPG Inc 1
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/Inc2]
+Desc=MPG Inc 2
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/Inc3]
+Desc=MPG Inc 3
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/N]
+[ModbusDevice/ModbusMPG/function2/N/A]
+Desc=N/A
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/ASel]
+Desc=A Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/BSel]
+Desc=B Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/CSel]
+Desc=C Axis Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/Slider1]
+Desc=Slider 1 Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/Slider2]
+Desc=Slider 2 Selector
+Type=1
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function2/Slider3]
+Desc=Slider 3 Selector
+Type=1
 RegIndex=0
 BitIndex=0

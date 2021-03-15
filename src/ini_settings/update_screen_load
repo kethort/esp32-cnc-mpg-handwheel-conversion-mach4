@@ -16,3 +16,11 @@ axisDRORegs = {
 	[11] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO10'),
 	[12] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO11')
 }
+
+local slider1ValReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider1')
+local slider2ValReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider2')
+local slider3ValReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider3')
+
+local slider1SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT51)
+local slider2SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT52)
+local slider3SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT53)
