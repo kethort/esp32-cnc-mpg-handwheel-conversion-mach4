@@ -4,6 +4,10 @@
   <img src="/img/mpg_esp32.jpg" width="700"/>
 </p>
 
+<p align="center">
+  <img src="/img/mpg-with-display.jpg" width="700"/>
+</p>
+
 ## Demonstration
 https://www.youtube.com/watch?v=FvmKIaZbhRo
 
@@ -68,7 +72,24 @@ https://github.com/tzapu/WiFiManager
 4.  [Boost Converter](https://www.amazon.com/gp/product/B07XG323G8/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1)
 5.  [ESP32](https://www.amazon.com/Xiuxin-Development-Dual-Mode-Bluetooth-Antenna/dp/B079PVCF2G/ref=sxts_sxwds-bia-wc-rsf-lq2a1_0?cv_ct_cx=esp32&dchild=1&keywords=esp32&pd_rd_i=B079PVCF2G&pd_rd_r=a13a37f2-296c-44a8-9513-68ab5bfbd9ad&pd_rd_w=ehkKD&pd_rd_wg=YDw1j&pf_rd_p=52f9c563-bb87-44f4-9d9d-e1c03402d90f&pf_rd_r=R9PF5M9ACRSXKMZDT689&psc=1&qid=1611217599&sr=1-1-d3e58e83-6458-471c-a87e-175495b96a10)
 
-## Wiring
+## Wiring - Display
+ESP32 to ILI9341 Display:
+    ESP32 GND -> ILI9341 GND <br>
+    ESP32 3V3 -> ILI9341 VCC <br>
+    ESP32 3V3 -> ILI9341 LED <br>
+    ESP32 D15 -> ILI9341 CS <br>
+    ESP32 EN -> ILI9341 RESET <br>
+    ESP32 D13 -> ILI9341 D/C <br>
+    ESP32 D23 -> ILI9341 SDI <br>
+    ESP32 D23 -> ILI9341 T_DIN <br>
+    ESP32 D18 -> ILI9341 SCK <br>
+    ESP32 D18 -> ILI9341 T_CLK <br>
+    ESP32 D21 -> ILI9341 T_CS <br>
+    ESP32 D19 -> ILI9341 T_OUT <br> 
+    ESP32 D2 -> Encoder A+ <br>
+    ESP32 D4 -> Encoder B+ <br>
+    
+## Wiring - No Display
 battery -> TP4056 Charger Module -> XL6009 Boost Convert (3.3 to 5V) -> MPG Estop switch -> ESP32 VIN/GND <br> <br>
 (The LED on the MPG PCB is connected to the 3.3v and GND terminals on the ESP32) <br> <br>
 MPG PCB: <br>
