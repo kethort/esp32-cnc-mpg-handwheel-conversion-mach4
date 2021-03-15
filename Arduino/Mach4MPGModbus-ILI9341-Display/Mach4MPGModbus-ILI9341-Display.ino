@@ -116,7 +116,8 @@ void setup(void)
   mb.server();
 
   pinMode(MPGEN, INPUT_PULLUP);
-  
+
+  // button state coils
   for(int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++) {
     mb.addCoil(regs[i]); 
   }
@@ -124,10 +125,16 @@ void setup(void)
   encoder.attachFullQuad(2, 4);
   encoder.clearCount();
   mb.addHreg(55); // encoder counts modbus register
-  
-  for(int i = 99; i < 114; i++)
+
+  // DRO registers (99 - 110)
+  for(int i = 99; i < 111; i++)
     mb.addHreg(i);
 
+  // Slider registers (56 - 58)
+  mb.addHreg(56);
+  mb.addHreg(57);
+  mb.addHreg(58);
+  
   drawMainPage();
   updateTime = millis(); // Next update time
 
@@ -167,12 +174,6 @@ void loop() {
       getTouchMPGPage();
       break;
     case 4:
-      /*
-      if (updateTime <= millis()) {
-        updateTime = millis() + LOOP_PERIOD;
-        updateSlider();
-      }
-      */
       getTouchSliderPage();
       break;
   }
@@ -242,100 +243,6 @@ void touch_calibrate() {
   }
 }
 
-void getTouchMPGPage() {
-  uint16_t x, y;
-
-  if (tft.getTouch(&x, &y))
-  { 
-    if ((x > XAXISBUTTON_X) && (x < (XAXISBUTTON_X + AXISBUTTON_W))) {
-      if ((y > XAXISBUTTON_Y) && (y <= (XAXISBUTTON_Y + AXISBUTTON_H))) {
-        selectAxis(XAXISBUTTON_X, XAXISBUTTON_Y, "X");
-        mb.Coil(regs[lastAxis], 0);
-        lastAxis = 0;
-        mb.Coil(regs[0], 1);
-      }
-    }
-
-    if ((x > YAXISBUTTON_X) && (x < (YAXISBUTTON_X + AXISBUTTON_W))) {
-      if ((y > YAXISBUTTON_Y) && (y <= (YAXISBUTTON_Y + AXISBUTTON_H))) {
-        selectAxis(YAXISBUTTON_X, YAXISBUTTON_Y, "Y");
-        mb.Coil(regs[lastAxis], 0);
-        lastAxis = 1;
-        mb.Coil(regs[1], 1);
-      }
-    }
-
-    if ((x > ZAXISBUTTON_X) && (x < (ZAXISBUTTON_X + AXISBUTTON_W))) {
-      if ((y > ZAXISBUTTON_Y) && (y <= (ZAXISBUTTON_Y + AXISBUTTON_H))) {
-        selectAxis(ZAXISBUTTON_X, ZAXISBUTTON_Y, "Z");
-        mb.Coil(regs[lastAxis], 0);
-        lastAxis = 2;
-        mb.Coil(regs[2], 1);
-      }
-    }
-
-    if ((x > AAXISBUTTON_X) && (x < (AAXISBUTTON_X + AXISBUTTON_W))) {
-      if ((y > AAXISBUTTON_Y) && (y <= (AAXISBUTTON_Y + AXISBUTTON_H))) {
-        selectAxis(AAXISBUTTON_X, AAXISBUTTON_Y, "A");
-        mb.Coil(regs[lastAxis], 0);
-        lastAxis = 3;
-        mb.Coil(regs[3], 1);
-      }
-    }
-
-    if ((x > BAXISBUTTON_X) && (x < (BAXISBUTTON_X + AXISBUTTON_W))) {
-      if ((y > BAXISBUTTON_Y) && (y <= (BAXISBUTTON_Y + AXISBUTTON_H))) {
-        selectAxis(BAXISBUTTON_X, BAXISBUTTON_Y, "B");
-        mb.Coil(regs[lastAxis], 0);
-        lastAxis = 4;
-        mb.Coil(regs[4], 1);
-      }
-    }
-
-    if ((x > CAXISBUTTON_X) && (x < (CAXISBUTTON_X + AXISBUTTON_W))) {
-      if ((y > CAXISBUTTON_Y) && (y <= (CAXISBUTTON_Y + AXISBUTTON_H))) {
-        selectAxis(CAXISBUTTON_X, CAXISBUTTON_Y, "C");
-        mb.Coil(regs[lastAxis], 0);
-        lastAxis = 5;
-        mb.Coil(regs[5], 1);
-      }
-    }
-
-    if ((x > INC1BUTTON_X) && (x < (INC1BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC1BUTTON_Y) && (y <= (INC1BUTTON_Y + AXISBUTTON_H))) {
-        selectInc(INC1BUTTON_X, INC1BUTTON_Y, "0.001");
-        mb.Coil(regs[lastInc], 0);
-        lastInc = 7;
-        mb.Coil(regs[7], 1);
-      }
-    }
-
-    if ((x > INC2BUTTON_X) && (x < (INC2BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC2BUTTON_Y) && (y <= (INC2BUTTON_Y + AXISBUTTON_H))) {
-        selectInc(INC2BUTTON_X, INC2BUTTON_Y, "0.01");
-        mb.Coil(regs[lastInc], 0);
-        lastInc = 8;
-        mb.Coil(regs[8], 1);
-      }
-    }
-
-    if ((x > INC3BUTTON_X) && (x < (INC3BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC3BUTTON_Y) && (y <= (INC3BUTTON_Y + AXISBUTTON_H))) {
-        selectInc(INC3BUTTON_X, INC3BUTTON_Y, "0.1");
-        mb.Coil(regs[lastInc], 0);
-        lastInc = 9;
-        mb.Coil(regs[9], 1);
-      }
-    }
-  
-    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
-      if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
-        drawMainPage();
-      }
-    }
-  }
-}
-
 void getTouchMainPage() {
   uint16_t x, y;
 
@@ -375,225 +282,6 @@ void drawMainPage() {
   drawMainNavButtons();
 }
 
-void drawDROValue(byte axisID, byte hreg1, byte hreg2, byte y_loc) {
-  int16_t droPrefix = mb.Hreg(hreg1);
-  int16_t droPostfix = mb.Hreg(hreg2);
-  float droDecimal = droPrefix + (droPostfix / 10000.0);
-
-  tft.setTextColor(TFT_WHITE);
-  tft.drawFloat(droDecimal, 4, 140, y_loc);  
-  lastDRODecimal[axisID] = droDecimal;  
-}
-
-void updateDROs() {
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(3);
-  tft.setTextDatum(MC_DATUM);
-
-  // erase the last value
-  tft.drawFloat(lastDRODecimal[0], 4, 140, 30); 
-  tft.drawFloat(lastDRODecimal[1], 4, 140, 70);
-  tft.drawFloat(lastDRODecimal[2], 4, 140, 110);
-  tft.drawFloat(lastDRODecimal[3], 4, 140, 150);
-  tft.drawFloat(lastDRODecimal[4], 4, 140, 190);
-  tft.drawFloat(lastDRODecimal[5], 4, 140, 230);
-
-  tft.setTextColor(TFT_WHITE);
-  tft.drawString("X: ", 40, 30);
-  tft.drawString("Y: ", 40, 70);
-  tft.drawString("Z: ", 40, 110);
-  tft.drawString("A: ", 40, 150);
-  tft.drawString("B: ", 40, 190);
-  tft.drawString("C: ", 40, 230);
-  
-  drawDROValue(0, 99, 100, 30);
-  drawDROValue(1, 101, 102, 70);
-  drawDROValue(2, 103, 104, 110);
-  drawDROValue(3, 105, 106, 150);
-  drawDROValue(4, 107, 108, 190);
-  drawDROValue(5, 109, 110, 230);
-}
-
-void drawDROPage() {
-  pageNum = 2;
-  tft.fillScreen(TFT_BLACK);
-  drawMainPageButton();
-}
-
-void getTouchDROPage() {
-  uint16_t x, y;
-
-  if (tft.getTouch(&x, &y)) {
-    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
-        if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
-          drawMainPage();
-        }
-      }
-  }
-}
-
-void drawMPGPage() {
-  pageNum = 3;
-
-  tft.fillScreen(TFT_BLACK);
-  drawAxisButtons();
-  drawIncButtons();
-  drawMainPageButton();
-
-  switch(lastAxis) {
-    case 0:
-      selectAxis(XAXISBUTTON_X, XAXISBUTTON_Y, "X");
-      break;
-    case 1:
-      selectAxis(YAXISBUTTON_X, YAXISBUTTON_Y, "Y");
-      break;
-    case 2:
-      selectAxis(ZAXISBUTTON_X, ZAXISBUTTON_Y, "Z");
-      break;
-    case 3:
-      selectAxis(AAXISBUTTON_X, AAXISBUTTON_Y, "A");
-      break;
-    case 4:
-      selectAxis(BAXISBUTTON_X, BAXISBUTTON_Y, "B");
-      break;
-    case 5:
-      selectAxis(CAXISBUTTON_X, CAXISBUTTON_Y, "C");
-      break;
-  }
-
-  switch(lastInc) {
-    case 7:
-      selectInc(INC1BUTTON_X, INC1BUTTON_Y, "0.001");
-      break;
-    case 8:
-      selectInc(INC2BUTTON_X, INC2BUTTON_Y, "0.01");
-      break;
-    case 9:
-      selectInc(INC3BUTTON_X, INC3BUTTON_Y, "0.1");
-      break;
-  }
-}
-
-void selectSlider(int32_t x, int32_t y, const char *sliderName) {
-  drawSliderButtons();
-  tft.fillRect(x, y, AXISBUTTON_W, AXISBUTTON_H, TFT_GREEN);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString(sliderName, x + (AXISBUTTON_W / 2), y + (AXISBUTTON_H / 2));
-}
-
-void updateSlider(int16_t sliderVal) {
-  int16_t regVal;
-    
-  switch(lastSlider) {
-    case 10:
-      mb.Hreg(111, sliderVal);
-      break;
-    case 11:
-      mb.Hreg(112, sliderVal);
-      break;
-    case 12:
-      mb.Hreg(113, sliderVal);
-      break;
-  }
-
-  //slider[0].drawSliderH(regVal);
-}
-
-void drawSliderButtons() {
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("FeedRate Sliders:", 120, 20);
-   
-  tft.fillRect(INC1BUTTON_X, INC1BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("FRO%", INC1BUTTON_X + (AXISBUTTON_W / 2), INC1BUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(INC2BUTTON_X, INC2BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("RRO%", INC2BUTTON_X + (AXISBUTTON_W / 2), INC2BUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(INC3BUTTON_X, INC3BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("SRO%", INC3BUTTON_X + (AXISBUTTON_W / 2), INC3BUTTON_Y + (AXISBUTTON_H / 2));
-}
-
-void drawSliderPage() {
-  pageNum = 4;
-  
-  tft.fillScreen(TFT_BLACK);
-  slider[0].drawSliderH(0);
-  
-  drawSliderButtons();
-  drawMainPageButton();
-}
-
-void getTouchSliderPage() {
-  uint16_t x, y;
-
-  if (tft.getTouch(&x, &y)) {
-    if (slider[0].containsH(x, y)) {
-      int16_t value = slider[0].getValueH(x); 
-      slider[0].drawSliderH(value);
-      updateSlider(value);
-    }
-
-    if ((x > INC1BUTTON_X) && (x < (INC1BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC1BUTTON_Y) && (y <= (INC1BUTTON_Y + AXISBUTTON_H))) {
-        selectSlider(INC1BUTTON_X, INC1BUTTON_Y, "FRO%"); 
-        int16_t regVal = mb.Hreg(111);
-        slider[0].drawSliderH(100);
-        slider[0].drawSliderH(0);
-        slider[0].drawSliderH(regVal);
-        mb.Coil(regs[lastSlider], 0);
-        lastSlider = 10;
-        mb.Coil(regs[10], 1);
-      }
-    }
-
-    if ((x > INC2BUTTON_X) && (x < (INC2BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC2BUTTON_Y) && (y <= (INC2BUTTON_Y + AXISBUTTON_H))) {
-        selectSlider(INC2BUTTON_X, INC2BUTTON_Y, "RRO%");
-        int16_t regVal = mb.Hreg(112);
-        slider[0].drawSliderH(100);
-        slider[0].drawSliderH(0);
-        slider[0].drawSliderH(regVal);
-        mb.Coil(regs[lastSlider], 0);
-        lastSlider = 11;
-        mb.Coil(regs[11], 1);
-      }
-    }
-
-    if ((x > INC3BUTTON_X) && (x < (INC3BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC3BUTTON_Y) && (y <= (INC3BUTTON_Y + AXISBUTTON_H))) {
-        selectSlider(INC3BUTTON_X, INC3BUTTON_Y, "SRO%");
-        int16_t regVal = mb.Hreg(113);
-        slider[0].drawSliderH(100);
-        slider[0].drawSliderH(0);
-        slider[0].drawSliderH(regVal);
-        mb.Coil(regs[lastSlider], 0);
-        lastSlider = 12;
-        mb.Coil(regs[12], 1);
-      }
-    }
-    
-    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
-      if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
-        slider[0].drawSliderH(100);
-        drawMainPage();
-      }
-    }
-  }
-}
-
 void drawMainNavButtons() {
   tft.fillRect(DROBUTTON_X, DROBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
   tft.setTextColor(TFT_BLACK);
@@ -620,90 +308,4 @@ void drawMainPageButton() {
    tft.setTextSize(2);
    tft.setTextDatum(MC_DATUM);
    tft.drawString("Main", MAINBUTTON_X + (AXISBUTTON_W / 2), MAINBUTTON_Y + (AXISBUTTON_H / 2));
-}
-
-void drawIncButtons() {
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("MPG Increment:", 125, 170);
-  
-  tft.fillRect(INC1BUTTON_X, INC1BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("0.001", INC1BUTTON_X + (AXISBUTTON_W / 2), INC1BUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(INC2BUTTON_X, INC2BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("0.01", INC2BUTTON_X + (AXISBUTTON_W / 2), INC2BUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(INC3BUTTON_X, INC3BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("0.1", INC3BUTTON_X + (AXISBUTTON_W / 2), INC3BUTTON_Y + (AXISBUTTON_H / 2));
-}
-
-void drawAxisButtons() {
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("MPG Axis:", 120, 20);
-  
-  tft.fillRect(XAXISBUTTON_X, XAXISBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("X", XAXISBUTTON_X + (AXISBUTTON_W / 2), XAXISBUTTON_Y + (AXISBUTTON_H / 2)); 
-  
-  tft.fillRect(YAXISBUTTON_X, YAXISBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("Y", YAXISBUTTON_X + (AXISBUTTON_W / 2), YAXISBUTTON_Y + (AXISBUTTON_H / 2)); 
-  
-  tft.fillRect(ZAXISBUTTON_X, ZAXISBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("Z", ZAXISBUTTON_X + (AXISBUTTON_W / 2), ZAXISBUTTON_Y + (AXISBUTTON_H / 2)); 
-  
-  tft.fillRect(AAXISBUTTON_X, AAXISBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("A", AAXISBUTTON_X + (AXISBUTTON_W / 2), AAXISBUTTON_Y + (AXISBUTTON_H / 2)); 
-  
-  tft.fillRect(BAXISBUTTON_X, BAXISBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("B", BAXISBUTTON_X + (AXISBUTTON_W / 2), BAXISBUTTON_Y + (AXISBUTTON_H / 2)); 
-  
-  tft.fillRect(CAXISBUTTON_X, CAXISBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("C", CAXISBUTTON_X + (AXISBUTTON_W / 2), CAXISBUTTON_Y + (AXISBUTTON_H / 2));
-}
-
-void selectAxis(int32_t x, int32_t y, const char *axisID) {
-  drawAxisButtons();
-  tft.fillRect(x, y, AXISBUTTON_W, AXISBUTTON_H, TFT_GREEN);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString(axisID, x + (AXISBUTTON_W / 2), y + (AXISBUTTON_H / 2));
-}
-
-void selectInc(int32_t x, int32_t y, const char *axisID) {
-  drawIncButtons();
-  tft.fillRect(x, y, AXISBUTTON_W, AXISBUTTON_H, TFT_GREEN);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString(axisID, x + (AXISBUTTON_W / 2), y + (AXISBUTTON_H / 2));
 }
