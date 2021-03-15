@@ -1,11 +1,11 @@
 # Mach4 Wireless (Wifi) MPG Handwheel Using ESP32 and Modbus TCP library
 
 <p align="center">
-  <img src="/img/mpg_esp32.jpg" width="700"/>
+  <img src="/img/mpg-with-display.jpg" width="700"/>
 </p>
 
 <p align="center">
-  <img src="/img/mpg-with-display.jpg" width="700"/>
+  <img src="/img/mpg_esp32.jpg" width="700"/>
 </p>
 
 ## Demonstration
