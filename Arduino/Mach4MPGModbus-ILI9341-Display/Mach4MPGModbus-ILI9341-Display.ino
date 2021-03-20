@@ -18,7 +18,7 @@ ESP32Encoder encoder;
 TFT_eSPI tft = TFT_eSPI();       
 TFT_eSPI_TouchUI slider[3];
 
-#define DEBUG // enables Serial
+//#define DEBUG // enables Serial
 
 #define SLIDER_MIN 0
 #define SLIDER_MAX 100

@@ -51,6 +51,6 @@ void getTouchDROPage() {
         if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
           drawMainPage();
         }
-      }
+    }
   }
 }
