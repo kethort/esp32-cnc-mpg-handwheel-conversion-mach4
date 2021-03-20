@@ -114,3 +114,8 @@ ESP32 Pin 19 -> MISO <br>
 ESP32 Pin 18 -> SCLK <br>
 ESP32 Pin 5  -> CS <br>
 ESP32 Pin 26 -> RST <br>
+
+## PCB Gerber File for Display included
+<p align="center">
+  <img src="/img/PCB2.PNG" width="300"/>
+</p>
