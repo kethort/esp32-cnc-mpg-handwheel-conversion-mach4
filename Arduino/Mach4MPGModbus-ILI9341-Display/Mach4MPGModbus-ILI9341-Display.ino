@@ -18,6 +18,8 @@ ESP32Encoder encoder;
 TFT_eSPI tft = TFT_eSPI();       
 TFT_eSPI_TouchUI slider[3];
 
+#define DEBUG // enables Serial
+
 #define SLIDER_MIN 0
 #define SLIDER_MAX 100
 #define SLIDER_BTN_W 20
@@ -25,7 +27,7 @@ TFT_eSPI_TouchUI slider[3];
 
 // This is the file name used to store the touch coordinate
 // calibration data. Change the name to start a new calibration.
-#define CALIBRATION_FILE "/TouchCalData4"
+#define CALIBRATION_FILE "/TouchCalData7"
 
 // Set REPEAT_CAL to true instead of false to run calibration
 // again, otherwise it will only be done once.
@@ -78,8 +80,6 @@ TFT_eSPI_TouchUI slider[3];
 #define SLIDERBUTTON_Y 195
 
 #define MPGEN 25
-
-//#define DEBUG
 
 byte lastAxis = 50;
 byte lastInc = 50;
