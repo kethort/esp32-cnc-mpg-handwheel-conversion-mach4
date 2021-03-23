@@ -91,7 +91,7 @@ ESP32 to ILI9341 Display:
     
 
 <p align="center">
-  <img src="img/esp32-ili9341-wiring.png" width="500"/>
+  <img src="img/esp32-ili9341-wiring.png" width="800"/>
 </p>
     
 ## Wiring - No Display
