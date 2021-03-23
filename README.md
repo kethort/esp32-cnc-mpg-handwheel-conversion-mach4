@@ -64,7 +64,7 @@ https://github.com/tzapu/WiFiManager
 <p align="center">
   <img src="/img/wizard.PNG" width="300"/>
 </p>
- 
+
 ## Parts List (Amazon links)
 1.  [MPG Handwheel](https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1)
 2.  [Lipo Battery](https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1)
@@ -88,6 +88,11 @@ ESP32 to ILI9341 Display:
     ESP32 D19 -> ILI9341 T_OUT <br> 
     ESP32 D2 -> Encoder A+ <br>
     ESP32 D4 -> Encoder B+ <br>
+    
+
+<p align="center">
+  <img src="esp32-ili9341-wiring.png" width="500"/>
+</p>
     
 ## Wiring - No Display
 battery -> TP4056 Charger Module -> XL6009 Boost Convert (3.3 to 5V) -> MPG Estop switch -> ESP32 VIN/GND <br> <br>
