@@ -80,6 +80,7 @@ TFT_eSPI_TouchUI slider[3];
 #define SLIDERBUTTON_Y 195
 
 #define MPGEN 25
+#define SCRLED 27
 
 byte lastAxis = 50;
 byte lastInc = 50;
@@ -89,6 +90,10 @@ float lastDRODecimal[6];
 
 #define LOOP_PERIOD 10   // DRO's update every 10 ms
 uint32_t updateTime = 0; // time for next update
+
+#define SCR_TMOUT 30000
+uint32_t screenTime = 0; 
+bool screenActive = true;
 
 void setup(void)
 {
@@ -116,6 +121,7 @@ void setup(void)
   mb.server();
 
   pinMode(MPGEN, INPUT_PULLUP);
+  pinMode(SCRLED, OUTPUT);
 
   // button state coils
   for(int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++) {
@@ -139,6 +145,8 @@ void setup(void)
   updateTime = millis(); // Next update time
 
   slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 40, 80, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
+  digitalWrite(SCRLED, HIGH);
+  screenTime = millis();
 }
 
 void loop() {
@@ -159,6 +167,13 @@ void loop() {
     encoder.pauseCount();
   }
 
+  // turn off the screen if no touch for 30 seconds
+  if (millis() - screenTime >= SCR_TMOUT) {
+    screenTime = millis();
+    screenActive = false;
+    digitalWrite(SCRLED, LOW);
+  }
+  
   switch(pageNum) {
     case 1:
       getTouchMainPage();
@@ -247,6 +262,13 @@ void getTouchMainPage() {
   uint16_t x, y;
 
   if (tft.getTouch(&x, &y)) {
+    if (!screenActive) {
+      screenActive = true;
+      digitalWrite(SCRLED, HIGH);
+    } else {
+      screenTime = millis();
+    }
+    
     if ((x > DROBUTTON_X) && (x < (DROBUTTON_X + NAVBUTTON_W))) {
       if ((y > DROBUTTON_Y) && (y <= (DROBUTTON_Y + NAVBUTTON_H))) {
         drawDROPage();
