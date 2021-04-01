@@ -2,7 +2,7 @@ cachetools==4.1.1
 future==0.18.2
 numpy==1.19.4
 pefile==2019.4.18
-Pillow==8.0.1
+Pillow==8.1.1
 psutil==5.7.3
 py2exe==0.10.1.0
 six==1.15.0
