@@ -76,7 +76,7 @@ https://github.com/tzapu/WiFiManager
 ESP32 to ILI9341 Display:
     ESP32 GND -> ILI9341 GND <br>
     ESP32 3V3 -> ILI9341 VCC <br>
-    ESP32 3V3 -> ILI9341 LED <br>
+    ESP32 D27 -> ILI9341 LED <br>
     ESP32 D15 -> ILI9341 CS <br>
     ESP32 EN -> ILI9341 RESET <br>
     ESP32 D13 -> ILI9341 D/C <br>
