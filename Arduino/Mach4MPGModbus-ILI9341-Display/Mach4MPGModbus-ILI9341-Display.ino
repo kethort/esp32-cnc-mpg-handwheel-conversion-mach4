@@ -4,11 +4,16 @@
 #include <WiFiManager.h> 
 #include <ModbusIP_ESP8266.h>
 #include <ESP32Encoder.h>
+#include <ESPmDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
 
 ModbusIP mb;
 int regs[] = {1,  2,  3,  9,  10, 11, 4,  5,  6,  7, 12, 13, 14}; 
 
 ESP32Encoder encoder;
+
+//Pangodream_18650_CL BL;
 
 #include "FS.h"
 #include <SPI.h>
@@ -18,7 +23,7 @@ ESP32Encoder encoder;
 TFT_eSPI tft = TFT_eSPI();       
 TFT_eSPI_TouchUI slider[3];
 
-//#define DEBUG // enables Serial
+#define DEBUG // enables Serial
 
 #define SLIDER_MIN 0
 #define SLIDER_MAX 100
@@ -70,6 +75,12 @@ TFT_eSPI_TouchUI slider[3];
 #define MAINBUTTON_X 85
 #define MAINBUTTON_Y 265
 
+#define IP_ADDR_X 120
+#define IP_ADDR_Y 20
+
+#define BATTERY_LEVEL_X 110
+#define BATTERY_LEVEL_Y 265
+
 #define DROBUTTON_X 72
 #define DROBUTTON_Y 75
 
@@ -88,12 +99,10 @@ byte lastSlider = 50;
 byte pageNum;
 float lastDRODecimal[6];
 
-#define LOOP_PERIOD 10   // DRO's update every 10 ms
-uint32_t updateTime = 0; // time for next update
-
 #define SCR_TMOUT 30000
 uint32_t screenTime = 0; 
 bool screenActive = true;
+bool droPageLoad;
 
 void setup(void)
 {
@@ -118,6 +127,7 @@ void setup(void)
   Serial.println(WiFi.localIP());
 #endif
   
+  setupOTA("MPG_Handwheel");
   mb.server();
 
   pinMode(MPGEN, INPUT_PULLUP);
@@ -128,7 +138,7 @@ void setup(void)
     mb.addCoil(regs[i]); 
   }
 
-  encoder.attachFullQuad(2, 4);
+  encoder.attachFullQuad(4, 2);
   encoder.clearCount();
   mb.addHreg(55); // encoder counts modbus register
 
@@ -142,14 +152,14 @@ void setup(void)
   mb.addHreg(58);
   
   drawMainPage();
-  updateTime = millis(); // Next update time
 
-  slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 40, 80, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
+  slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 50, 80, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
   digitalWrite(SCRLED, HIGH);
   screenTime = millis();
 }
 
 void loop() {
+  ArduinoOTA.handle();
   mb.task();
   mb.Coil(regs[6], !digitalRead(25));
 
@@ -163,13 +173,14 @@ void loop() {
   if(!digitalRead(25)) {
     encoder.resumeCount();
     mb.Hreg(55, (int16_t)encoder.getCount());
+    screenTime = millis();
+    digitalWrite(SCRLED, HIGH);
   } else {
     encoder.pauseCount();
   }
 
   // turn off the screen if no touch for 30 seconds
   if (millis() - screenTime >= SCR_TMOUT) {
-    screenTime = millis();
     screenActive = false;
     digitalWrite(SCRLED, LOW);
   }
@@ -179,10 +190,7 @@ void loop() {
       getTouchMainPage();
       break;
     case 2:
-      if (updateTime <= millis()) {
-        updateTime = millis() + LOOP_PERIOD;
-        updateDROs();
-      }
+      updateDROs();
       getTouchDROPage();
       break;
     case 3:
@@ -192,6 +200,51 @@ void loop() {
       getTouchSliderPage();
       break;
   }
+}
+
+void setupOTA(const char* nameprefix) {
+  // Configure the hostname
+  uint16_t maxlen = strlen(nameprefix) + 7;
+  char *fullhostname = new char[maxlen];
+  uint8_t mac[6];
+  WiFi.macAddress(mac);
+  snprintf(fullhostname, maxlen, "%s-%02x%02x%02x", nameprefix, mac[3], mac[4], mac[5]);
+  ArduinoOTA.setHostname(fullhostname);
+  delete[] fullhostname;
+
+  ArduinoOTA.onStart([]() {
+    String type;
+    if (ArduinoOTA.getCommand() == U_FLASH)
+      type = "sketch";
+    else // U_SPIFFS
+      type = "filesystem";
+
+    Serial.println("Start updating " + type);
+  });
+  
+  ArduinoOTA.onEnd([]() {
+    Serial.println("\nEnd");
+  });
+  
+  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+  });
+  
+  ArduinoOTA.onError([](ota_error_t error) {
+    Serial.printf("Error[%u]: ", error);
+    if (error == OTA_AUTH_ERROR) 
+      Serial.println("\nAuth Failed");
+    else if (error == OTA_BEGIN_ERROR) 
+      Serial.println("\nBegin Failed");
+    else if (error == OTA_CONNECT_ERROR) 
+      Serial.println("\nConnect Failed");
+    else if (error == OTA_RECEIVE_ERROR) 
+      Serial.println("\nReceive Failed");
+    else if (error == OTA_END_ERROR) 
+      Serial.println("\nEnd Failed");
+  });
+
+  ArduinoOTA.begin();
 }
 
 void touch_calibrate() {
@@ -262,11 +315,11 @@ void getTouchMainPage() {
   uint16_t x, y;
 
   if (tft.getTouch(&x, &y)) {
+    screenTime = millis();
+    
     if (!screenActive) {
       screenActive = true;
       digitalWrite(SCRLED, HIGH);
-    } else {
-      screenTime = millis();
     }
     
     if ((x > DROBUTTON_X) && (x < (DROBUTTON_X + NAVBUTTON_W))) {
@@ -299,7 +352,7 @@ void drawMainPage() {
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
   sprintf(strBfr, "IP: %s", WiFi.localIP().toString().c_str());
-  tft.drawString(strBfr, 120, 20); 
+  tft.drawString(strBfr, IP_ADDR_X, IP_ADDR_Y); 
 
   drawMainNavButtons();
 }

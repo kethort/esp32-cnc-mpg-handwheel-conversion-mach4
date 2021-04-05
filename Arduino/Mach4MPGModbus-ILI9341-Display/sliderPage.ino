@@ -37,6 +37,13 @@ void getTouchSliderPage() {
   uint16_t x, y;
 
   if (tft.getTouch(&x, &y)) {
+    screenTime = millis();
+    
+    if (!screenActive) {
+      screenActive = true;
+      digitalWrite(SCRLED, HIGH);
+    }
+    
     if (slider[0].containsH(x, y)) {
       int16_t value = slider[0].getValueH(x); 
       slider[0].drawSliderH(value);
@@ -85,6 +92,10 @@ void getTouchSliderPage() {
     if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
       if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
         slider[0].drawSliderH(100);
+        lastSlider = 0;
+        mb.Coil(regs[10], 0);
+        mb.Coil(regs[11], 0);
+        mb.Coil(regs[12], 0);
         drawMainPage();
       }
     }

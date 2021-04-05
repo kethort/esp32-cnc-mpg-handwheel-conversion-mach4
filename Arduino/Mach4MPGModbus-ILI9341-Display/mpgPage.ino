@@ -1,8 +1,14 @@
 void getTouchMPGPage() {
   uint16_t x, y;
 
-  if (tft.getTouch(&x, &y))
-  { 
+  if (tft.getTouch(&x, &y)) {
+    screenTime = millis();
+    
+    if (!screenActive) {
+      screenActive = true;
+      digitalWrite(SCRLED, HIGH);
+    }
+     
     if ((x > XAXISBUTTON_X) && (x < (XAXISBUTTON_X + AXISBUTTON_W))) {
       if ((y > XAXISBUTTON_Y) && (y <= (XAXISBUTTON_Y + AXISBUTTON_H))) {
         selectAxis(XAXISBUTTON_X, XAXISBUTTON_Y, "X");

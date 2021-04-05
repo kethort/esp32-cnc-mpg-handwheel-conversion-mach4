@@ -8,11 +8,9 @@ machEncoderCounts = 0
 
 ModbusMPG.mpgSelectedAxis = 0
 ModbusMPG.mpgLastSelectedAxis = -1
-ModbusMPG.axisChanged = false
 
 ModbusMPG.mpgSelectedInc = 0
 lastMPGInc = -1
-ModbusMPG.mutex = false
 
 mc.mcMpgSetAccel(inst, 11, 80)  
 mc.mcMpgSetRate(inst, 11, 100)
@@ -92,7 +90,7 @@ end
 
 function handleAxisSelectionChange(modbusMPGEncoderCounts)
 	if ModbusMPG.mpgLastSelectedAxis ~= ModbusMPG.mpgSelectedAxis then
-		ModbusMPG.axisChanged = true
+		mc.mcMpgSetAxis(inst, 11, ModbusMPG.mpgSelectedAxis - 1)
 		ModbusMPG.mpgLastSelectedAxis = ModbusMPG.mpgSelectedAxis
 		lastMPGEncoderCounts = modbusMPGEncoderCounts
 		lastMPGCountsMoved = modbusMPGEncoderCounts
@@ -114,14 +112,11 @@ function processMPGMove(modbusMPGEncoderCounts)
 		-- instead of finishing the last move and starting a new move, something reverts the last
 		-- axis to where it was before the MPG move and moves the new axis to the current encoder counts
 		-- of the pendant. That is why the program is "forced" to only accept a delta in counts less than 100
-		if ModbusMPG.axisChanged then
-			ModbusMPG.axisChanged = false
+		if math.abs(newMachMPGEncCounts - lastMPGCountsMoved) < 100 then
 			mc.mcMpgSetAxis(inst, 11, ModbusMPG.mpgSelectedAxis - 1)
-		else
-			if math.abs(newMachMPGEncCounts - lastMPGCountsMoved) < 100 then
-				mc.mcMpgMoveCounts(inst, 11, newMachMPGEncCounts - lastMPGCountsMoved)
-			end
+			mc.mcMpgMoveCounts(inst, 11, newMachMPGEncCounts - lastMPGCountsMoved)
 		end
+
 		
 		lastMPGCountsMoved = newMachMPGEncCounts
 		lastMPGEncoderCounts = newMachMPGEncCounts
@@ -154,6 +149,7 @@ function ModbusMPG.RunModbusMPG()
 	if lastMPGInc ~= ModbusMPG.mpgSelectedInc then
 		setMPGIncrement()
 		lastMPGInc = ModbusMPG.mpgSelectedInc
+		--mc.mcCntlSetLastError(inst, 'Axis: ' .. tostring(ModbusMPG.mpgSelectedAxis - 1) .. 'Inc: ' .. tostring(ModbusMPG.mpgSelectedInc))
 	end
 
 	if tonumber(ModbusMPG.mpgSelectedAxis) > 0 and mpgEnabled then
