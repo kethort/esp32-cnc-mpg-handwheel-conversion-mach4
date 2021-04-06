@@ -1,6 +1,7 @@
 
 axisID = 0
 droRegsPos = 1
+lastSelectedSlider = 0
 
 axisDRORegs = {
 	[1] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO0'),
