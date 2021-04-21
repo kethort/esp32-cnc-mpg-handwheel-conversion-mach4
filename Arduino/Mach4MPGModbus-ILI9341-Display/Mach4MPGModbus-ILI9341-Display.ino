@@ -32,7 +32,7 @@ TFT_eSPI_TouchUI slider[3];
 
 // This is the file name used to store the touch coordinate
 // calibration data. Change the name to start a new calibration.
-#define CALIBRATION_FILE "/TouchCalData7"
+#define CALIBRATION_FILE "/TouchCalData0"
 
 // Set REPEAT_CAL to true instead of false to run calibration
 // again, otherwise it will only be done once.
@@ -90,7 +90,7 @@ TFT_eSPI_TouchUI slider[3];
 #define SLIDERBUTTON_X 72
 #define SLIDERBUTTON_Y 195
 
-#define MPGEN 25
+#define MPGEN 32
 #define SCRLED 27
 
 byte lastAxis = 50;
@@ -161,7 +161,7 @@ void setup(void)
 void loop() {
   ArduinoOTA.handle();
   mb.task();
-  mb.Coil(regs[6], !digitalRead(25));
+  mb.Coil(regs[6], !digitalRead(MPGEN));
 
   // forces encoder count rollover to zero instead of int16_t max/min
   if((int16_t)encoder.getCount() > 32760 ||(int16_t)encoder.getCount() < -32760){
@@ -170,7 +170,7 @@ void loop() {
   }
 
   // only get encoder counts when the MPG enable button is pressed
-  if(!digitalRead(25)) {
+  if(!digitalRead(MPGEN)) {
     encoder.resumeCount();
     mb.Hreg(55, (int16_t)encoder.getCount());
     screenTime = millis();
