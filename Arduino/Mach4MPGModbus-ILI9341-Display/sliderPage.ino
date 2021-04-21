@@ -24,7 +24,7 @@ void updateSlider(int16_t sliderVal) {
 }
 
 void drawSliderPage() {
-  pageNum = 4;
+  pageNum = 3;
   
   tft.fillScreen(TFT_BLACK);
   slider[0].drawSliderH(0);

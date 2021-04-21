@@ -99,7 +99,7 @@ void getTouchMPGPage() {
 }
 
 void drawMPGPage() {
-  pageNum = 3;
+  pageNum = 2;
 
   tft.fillScreen(TFT_BLACK);
   drawAxisButtons();

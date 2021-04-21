@@ -81,17 +81,16 @@ TFT_eSPI_TouchUI slider[3];
 #define BATTERY_LEVEL_X 110
 #define BATTERY_LEVEL_Y 265
 
-#define DROBUTTON_X 72
-#define DROBUTTON_Y 75
+#define MPGBUTTON_X 25
+#define MPGBUTTON_Y 265
 
-#define MPGBUTTON_X 72
-#define MPGBUTTON_Y 135
-
-#define SLIDERBUTTON_X 72
-#define SLIDERBUTTON_Y 195
+#define SLIDERBUTTON_X 127
+#define SLIDERBUTTON_Y 265
 
 #define MPGEN 32
 #define SCRLED 27
+#define ADC0 25
+#define ADC1 26
 
 byte lastAxis = 50;
 byte lastInc = 50;
@@ -102,7 +101,7 @@ float lastDRODecimal[6];
 #define SCR_TMOUT 30000
 uint32_t screenTime = 0; 
 bool screenActive = true;
-bool droPageLoad;
+bool mainPageLoad;
 
 void setup(void)
 {
@@ -187,16 +186,13 @@ void loop() {
   
   switch(pageNum) {
     case 1:
+      updateDROs();
       getTouchMainPage();
       break;
     case 2:
-      updateDROs();
-      getTouchDROPage();
-      break;
-    case 3:
       getTouchMPGPage();
       break;
-    case 4:
+    case 3:
       getTouchSliderPage();
       break;
   }
@@ -322,12 +318,6 @@ void getTouchMainPage() {
       digitalWrite(SCRLED, HIGH);
     }
     
-    if ((x > DROBUTTON_X) && (x < (DROBUTTON_X + NAVBUTTON_W))) {
-      if ((y > DROBUTTON_Y) && (y <= (DROBUTTON_Y + NAVBUTTON_H))) {
-        drawDROPage();
-      }
-    }
-
     if ((x > MPGBUTTON_X) && (x < (MPGBUTTON_X + NAVBUTTON_W))) {
       if ((y > MPGBUTTON_Y) && (y <= (MPGBUTTON_Y + NAVBUTTON_H))) {
         drawMPGPage();
@@ -351,19 +341,14 @@ void drawMainPage() {
   tft.setTextColor(TFT_WHITE);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  sprintf(strBfr, "IP: %s", WiFi.localIP().toString().c_str());
+  sprintf(strBfr, "%s", WiFi.localIP().toString().c_str());
   tft.drawString(strBfr, IP_ADDR_X, IP_ADDR_Y); 
 
+  drawDROs();
   drawMainNavButtons();
 }
 
 void drawMainNavButtons() {
-  tft.fillRect(DROBUTTON_X, DROBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("DRO's", DROBUTTON_X + (NAVBUTTON_W / 2), DROBUTTON_Y + (NAVBUTTON_H / 2)); 
-  
   tft.fillRect(MPGBUTTON_X, MPGBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
   tft.setTextColor(TFT_BLACK);
   tft.setTextSize(2);
@@ -383,4 +368,51 @@ void drawMainPageButton() {
    tft.setTextSize(2);
    tft.setTextDatum(MC_DATUM);
    tft.drawString("Main", MAINBUTTON_X + (AXISBUTTON_W / 2), MAINBUTTON_Y + (AXISBUTTON_H / 2));
+}
+
+void drawDROValue(byte axisID, byte hreg1, byte hreg2) {
+  int16_t droPrefix = mb.Hreg(hreg1);
+  int16_t droPostfix = mb.Hreg(hreg2);
+  float droDecimal = droPrefix + (droPostfix / 10000.0);
+
+  if(droDecimal != lastDRODecimal[axisID] || mainPageLoad) {
+    screenTime = millis();
+    tft.setTextColor(TFT_BLACK);
+    // erase the last value
+    tft.drawFloat(lastDRODecimal[axisID], 4, 140, (30 * axisID) + 70); 
+      
+    tft.setTextColor(TFT_WHITE);
+    tft.drawFloat(droDecimal, 4, 140, (30 * axisID) + 70);  
+  }
+  lastDRODecimal[axisID] = droDecimal;  
+}
+
+void updateDROs() { 
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  
+  drawDROValue(0, 99, 100);
+  drawDROValue(1, 101, 102);
+  drawDROValue(2, 103, 104);
+  drawDROValue(3, 105, 106);
+  drawDROValue(4, 107, 108);
+  drawDROValue(5, 109, 110);
+}
+
+void drawDROs() {
+  mainPageLoad = true;
+  
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+
+  tft.setTextColor(TFT_WHITE);
+  tft.drawString("X: ", 40, 70);
+  tft.drawString("Y: ", 40, 100);
+  tft.drawString("Z: ", 40, 130);
+  tft.drawString("A: ", 40, 160);
+  tft.drawString("B: ", 40, 190);
+  tft.drawString("C: ", 40, 220);
+
+  updateDROs();
+  mainPageLoad = false;
 }
