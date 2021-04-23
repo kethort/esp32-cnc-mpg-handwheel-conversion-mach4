@@ -13,17 +13,16 @@ int regs[] = {1,  2,  3,  9,  10, 11, 4,  5,  6,  7, 12, 13, 14};
 
 ESP32Encoder encoder;
 
-//Pangodream_18650_CL BL;
-
 #include "FS.h"
 #include <SPI.h>
 #include <TFT_eSPI.h> 
 #include <TFT_eSPI_TouchUI.h>
+//#include "Free_Fonts.h"
 
 TFT_eSPI tft = TFT_eSPI();       
 TFT_eSPI_TouchUI slider[3];
 
-#define DEBUG // enables Serial
+//#define DEBUG // enables Serial
 
 #define SLIDER_MIN 0
 #define SLIDER_MAX 100
@@ -81,10 +80,13 @@ TFT_eSPI_TouchUI slider[3];
 #define BATTERY_LEVEL_X 110
 #define BATTERY_LEVEL_Y 265
 
-#define MPGBUTTON_X 25
+#define CONTROLBUTTON_X 5
+#define CONTROLBUTTON_Y 265
+
+#define MPGBUTTON_X 85
 #define MPGBUTTON_Y 265
 
-#define SLIDERBUTTON_X 127
+#define SLIDERBUTTON_X 164
 #define SLIDERBUTTON_Y 265
 
 #define MPGEN 32
@@ -190,9 +192,12 @@ void loop() {
       getTouchMainPage();
       break;
     case 2:
-      getTouchMPGPage();
+      getTouchControlPage();
       break;
     case 3:
+      getTouchMPGPage();
+      break;
+    case 4:
       getTouchSliderPage();
       break;
   }
@@ -209,6 +214,7 @@ void setupOTA(const char* nameprefix) {
   delete[] fullhostname;
 
   ArduinoOTA.onStart([]() {
+#ifdef DEBUG
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH)
       type = "sketch";
@@ -216,17 +222,23 @@ void setupOTA(const char* nameprefix) {
       type = "filesystem";
 
     Serial.println("Start updating " + type);
+#endif
   });
   
   ArduinoOTA.onEnd([]() {
+#ifdef DEBUG
     Serial.println("\nEnd");
+#endif
   });
   
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+#ifdef DEBUG
     Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+#endif
   });
   
   ArduinoOTA.onError([](ota_error_t error) {
+#ifdef DEBUG
     Serial.printf("Error[%u]: ", error);
     if (error == OTA_AUTH_ERROR) 
       Serial.println("\nAuth Failed");
@@ -238,6 +250,7 @@ void setupOTA(const char* nameprefix) {
       Serial.println("\nReceive Failed");
     else if (error == OTA_END_ERROR) 
       Serial.println("\nEnd Failed");
+#endif
   });
 
   ArduinoOTA.begin();
@@ -249,7 +262,9 @@ void touch_calibrate() {
 
   // check file system exists
   if (!SPIFFS.begin()) {
+#ifdef DEBUG
     Serial.println("Formatting file system");
+#endif
     SPIFFS.format();
     SPIFFS.begin();
   }
@@ -317,15 +332,21 @@ void getTouchMainPage() {
       screenActive = true;
       digitalWrite(SCRLED, HIGH);
     }
+
+    if ((x > CONTROLBUTTON_X) && (x < (CONTROLBUTTON_X + AXISBUTTON_W))) {
+      if ((y > CONTROLBUTTON_Y) && (y <= (CONTROLBUTTON_Y + AXISBUTTON_H))) {
+        drawControlPage();
+      }
+    }
     
-    if ((x > MPGBUTTON_X) && (x < (MPGBUTTON_X + NAVBUTTON_W))) {
-      if ((y > MPGBUTTON_Y) && (y <= (MPGBUTTON_Y + NAVBUTTON_H))) {
+    if ((x > MPGBUTTON_X) && (x < (MPGBUTTON_X + AXISBUTTON_W))) {
+      if ((y > MPGBUTTON_Y) && (y <= (MPGBUTTON_Y + AXISBUTTON_H))) {
         drawMPGPage();
       }
     }
 
-    if ((x > SLIDERBUTTON_X) && (x < (SLIDERBUTTON_X + NAVBUTTON_W))) {
-      if ((y > SLIDERBUTTON_Y) && (y <= (SLIDERBUTTON_Y + NAVBUTTON_H))) {
+    if ((x > SLIDERBUTTON_X) && (x < (SLIDERBUTTON_X + AXISBUTTON_W))) {
+      if ((y > SLIDERBUTTON_Y) && (y <= (SLIDERBUTTON_Y + AXISBUTTON_H))) {
         drawSliderPage();
       }
     }
@@ -349,17 +370,18 @@ void drawMainPage() {
 }
 
 void drawMainNavButtons() {
-  tft.fillRect(MPGBUTTON_X, MPGBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
   tft.setTextColor(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  tft.drawString("MPG", MPGBUTTON_X + (NAVBUTTON_W / 2), MPGBUTTON_Y + (NAVBUTTON_H / 2)); 
   
-  tft.fillRect(SLIDERBUTTON_X, SLIDERBUTTON_Y, NAVBUTTON_W, NAVBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("Sliders", SLIDERBUTTON_X + (NAVBUTTON_W / 2), SLIDERBUTTON_Y + (NAVBUTTON_H / 2)); 
+  tft.fillRect(CONTROLBUTTON_X, CONTROLBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.drawString("Ctrl", CONTROLBUTTON_X + (AXISBUTTON_W / 2), CONTROLBUTTON_Y + (AXISBUTTON_H / 2));
+  
+  tft.fillRect(MPGBUTTON_X, MPGBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.drawString("MPG", MPGBUTTON_X + (AXISBUTTON_W / 2), MPGBUTTON_Y + (AXISBUTTON_H / 2)); 
+  
+  tft.fillRect(SLIDERBUTTON_X, SLIDERBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.drawString("Speed", SLIDERBUTTON_X + (AXISBUTTON_W / 2), SLIDERBUTTON_Y + (AXISBUTTON_H / 2)); 
 }
 
 void drawMainPageButton() {

@@ -26,22 +26,15 @@ function sendDROFloatsThroughModbus()
 end
 
 function updateMPGSliderVals()
-	if mc.mcSignalGetState(slider1SelReg) == 1 then --2.5
+	if mc.mcSignalGetState(slider1SelReg) == 1 then 
 		local slider1Val = mc.mcRegGetValueLong(slider1ValReg) * 2.5
-		
 		mc.mcCntlSetFRO(inst, slider1Val)
-	end
-
-	if mc.mcSignalGetState(slider2SelReg) == 1 then
+	elseif mc.mcSignalGetState(slider2SelReg) == 1 then
 		local slider2Val = mc.mcRegGetValueLong(slider2ValReg)
-		
-		mc.mcCntlSetRRO(inst, slider2Val)
-	end
-		
-	if mc.mcSignalGetState(slider3SelReg) == 1 then
+		mc.mcCntlSetRRO(inst, slider2Val)		
+	elseif mc.mcSignalGetState(slider3SelReg) == 1 then
 		local slider3Val = mc.mcRegGetValueLong(slider3ValReg)
-
-		mc.mcSpindleSetOverride(inst, slider3Val)
+		mc.mcSpindleSetOverride(inst, (slider3Val / 100) + 0.5)
 	end
 end
 
