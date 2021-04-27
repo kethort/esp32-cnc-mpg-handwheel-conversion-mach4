@@ -5,11 +5,17 @@
 </p>
 
 <p align="center">
+  <img src="/img/thuh_parts.jpg" width="700"/>
+</p>
+
+<p align="center">
   <img src="/img/mpg_esp32.jpg" width="700"/>
 </p>
 
-## Demonstration
-https://www.youtube.com/watch?v=FvmKIaZbhRo
+## Demonstration & Assembly
+https://www.youtube.com/watch?v=FvmKIaZbhRo <br>
+https://www.youtube.com/watch?v=sGhttK0reT0&t=2s <br>
+https://www.youtube.com/watch?v=5fpQ3xS1Tu8&t=2s
 
 ## Required Arduino Libraries
 https://github.com/emelianov/modbus-esp8266 <br>
