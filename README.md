@@ -122,5 +122,5 @@ ESP32 Pin 26 -> RST <br>
 
 ## PCB Gerber File for Display included
 <p align="center">
-  <img src="/img/PCB2.PNG" width="300"/>
+  <img src="/img/PCB.PNG" width="300"/>
 </p>
