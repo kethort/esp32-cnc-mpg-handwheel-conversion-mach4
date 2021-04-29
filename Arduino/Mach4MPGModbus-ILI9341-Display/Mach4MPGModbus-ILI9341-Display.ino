@@ -17,7 +17,6 @@ ESP32Encoder encoder;
 #include <SPI.h>
 #include <TFT_eSPI.h> 
 #include <TFT_eSPI_TouchUI.h>
-//#include "Free_Fonts.h"
 
 TFT_eSPI tft = TFT_eSPI();       
 TFT_eSPI_TouchUI slider[3];
@@ -399,10 +398,10 @@ void drawDROValue(byte axisID, byte hreg1, byte hreg2) {
 
   if(droDecimal != lastDRODecimal[axisID] || mainPageLoad) {
     screenTime = millis();
-    tft.setTextColor(TFT_BLACK);
     // erase the last value
+    tft.setTextColor(TFT_BLACK);
     tft.drawFloat(lastDRODecimal[axisID], 4, 140, (30 * axisID) + 70); 
-      
+    // draw the current value  
     tft.setTextColor(TFT_WHITE);
     tft.drawFloat(droDecimal, 4, 140, (30 * axisID) + 70);  
   }
