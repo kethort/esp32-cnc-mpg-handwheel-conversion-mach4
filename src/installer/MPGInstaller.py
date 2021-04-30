@@ -411,7 +411,7 @@ class AppWindow(wx.Frame):
 		
 		os.mkdir(temp_dir)
 
-		# extract screen files from .set file
+		# extract screen files from Mach4 screen .set file (.set file is basically a zip file)
 		with zipfile.ZipFile(screen_path, 'r') as zip_ref:
 			zip_ref.extractall(temp_dir)
 
@@ -422,11 +422,14 @@ class AppWindow(wx.Frame):
 		tree = et.parse(os.path.join(temp_dir, 'screen.xml'))
 		root = tree.getroot()
 
+		# sets the Mach4 PLC loop refresh rate to 5ms (default is 50ms)
 		for node in tree.iter('Property'):
 			if node.attrib['name'] == 'PLC Interval':
 				node.text = '5'
 				break
 
+		# if using the ili9341 display, insert the LUA code into the Mach4
+		# PLC and Screen Load scripts (these are in the screen.xml file in the .set zip)
 		if self.chkbx_display.IsChecked():
 			ini_settings = open('update_plc')
 			plc += ini_settings.read()
