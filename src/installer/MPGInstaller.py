@@ -1,5 +1,4 @@
 import wx
-#import wx.xrc
 import os
 import psutil
 import shutil
