@@ -1,7 +1,7 @@
 # Mach4 Wireless (Wifi) MPG Handwheel Using ESP32 and Modbus TCP library
 
 <p align="center">
-  <img src="/img/mpg-with-display.jpg" width="700"/>
+  <img src="/img/mpg-display.jpg" width="700"/>
 </p>
 
 <p align="center">
@@ -129,4 +129,12 @@ ESP32 Pin 26 -> RST <br>
 ## PCB Gerber File for Display included
 <p align="center">
   <img src="/img/PCB.PNG" width="300"/>
+</p>
+
+<p align="center">
+  <img src="/img/PCB-exploded.png" width="700"/>
+</p>
+
+<p align="center">
+  <img src="/img/PCB-programming-port.png" width="700"/>
 </p>
