@@ -21,6 +21,8 @@ local modbusFunc0ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function0/rc")
 local modbusFunc1ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function1/rc")
 
 local modbusMPGEncoderCountsReg = mc.mcRegGetHandle(inst, "ModbusMPG/MPGEnc")
+
+-- the MPG Handwheel will use software inputs 54-63 in the Mach4 Configuration
 local xAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT54)
 local yAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT55)
 local zAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT56)
@@ -149,7 +151,6 @@ function ModbusMPG.RunModbusMPG()
 	if lastMPGInc ~= ModbusMPG.mpgSelectedInc then
 		setMPGIncrement()
 		lastMPGInc = ModbusMPG.mpgSelectedInc
-		--mc.mcCntlSetLastError(inst, 'Axis: ' .. tostring(ModbusMPG.mpgSelectedAxis - 1) .. 'Inc: ' .. tostring(ModbusMPG.mpgSelectedInc))
 	end
 
 	if tonumber(ModbusMPG.mpgSelectedAxis) > 0 and mpgEnabled then
