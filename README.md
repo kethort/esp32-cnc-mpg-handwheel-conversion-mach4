@@ -126,7 +126,9 @@ ESP32 Pin 18 -> SCLK <br>
 ESP32 Pin 5  -> CS <br>
 ESP32 Pin 26 -> RST <br>
 
-## PCB Gerber File for Display included
+## PCB Gerber File & 3d print files for Display included
+Original 3d print file creator: https://www.thingiverse.com/thing:4539827
+
 <p align="center">
   <img src="/img/PCB.PNG" width="300"/>
 </p>
