@@ -21,7 +21,7 @@ ESP32Encoder encoder;
 TFT_eSPI tft = TFT_eSPI();       
 TFT_eSPI_TouchUI slider[3];
 
-//#define DEBUG // enables Serial
+#define DEBUG // enables Serial
 
 #define SLIDER_MIN 0
 #define SLIDER_MAX 100
@@ -30,7 +30,7 @@ TFT_eSPI_TouchUI slider[3];
 
 // This is the file name used to store the touch coordinate
 // calibration data. Change the name to start a new calibration.
-#define CALIBRATION_FILE "/TouchCalData0"
+#define CALIBRATION_FILE "/TouchCalData1"
 
 // Set REPEAT_CAL to true instead of false to run calibration
 // again, otherwise it will only be done once.
@@ -106,6 +106,9 @@ bool mainPageLoad;
 
 void setup(void)
 {
+  pinMode(SCRLED, OUTPUT);
+  digitalWrite(SCRLED, HIGH);
+
   tft.init();
 
   // Set the rotation before we calibrate
@@ -131,7 +134,6 @@ void setup(void)
   mb.server();
 
   pinMode(MPGEN, INPUT_PULLUP);
-  pinMode(SCRLED, OUTPUT);
 
   // button state coils
   for(int i = 0; i < sizeof(regs)/sizeof(regs[0]); i++) {
@@ -154,7 +156,6 @@ void setup(void)
   drawMainPage();
 
   slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 50, 80, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
-  digitalWrite(SCRLED, HIGH);
   screenTime = millis();
 }
 
