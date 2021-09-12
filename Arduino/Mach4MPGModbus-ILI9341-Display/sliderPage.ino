@@ -1,4 +1,4 @@
-void selectSlider(int32_t x, int32_t y, const char *sliderName) {
+void selectedButton(int32_t x, int32_t y, const char *sliderName) {
   drawSliderButtons();
   tft.fillRect(x, y, AXISBUTTON_W, AXISBUTTON_H, TFT_GREEN);
   tft.setTextColor(TFT_BLACK);
@@ -30,12 +30,39 @@ void drawSliderPage() {
   slider[0].drawSliderH(0);
   
   drawSliderButtons();
-  drawMainPageButton();
+  drawBackButton();
+}
+
+void selectSlider(byte newSliderID) {
+  mb.Coil(regs[lastSlider], 0);
+  lastSlider = newSliderID;
+  mb.Coil(regs[newSliderID], 1);  
+}
+
+void drawSliderChange(int16_t regVal) {
+  slider[0].drawSliderH(100);
+  slider[0].drawSliderH(0);
+  slider[0].drawSliderH(regVal);
 }
 
 void getTouchSliderPage() {
   uint16_t x, y;
 
+/*
+  // init slider vals
+  if (sliderPageLoad) {
+    mb.Hreg(59, 1);
+    
+    if (mb.Hreg(58) > -1) {
+      delay(10);
+      mb.Hreg(59, 0);
+      sliderPageLoad = false;
+  }
+    
+    return;
+  }
+*/
+  
   if (tft.getTouch(&x, &y)) {
     screenTime = millis();
     
@@ -52,51 +79,39 @@ void getTouchSliderPage() {
 
     if ((x > INC1BUTTON_X) && (x < (INC1BUTTON_X + AXISBUTTON_W))) {
       if ((y > INC1BUTTON_Y) && (y <= (INC1BUTTON_Y + AXISBUTTON_H))) {
-        selectSlider(INC1BUTTON_X, INC1BUTTON_Y, "FRO%"); 
+        selectedButton(INC1BUTTON_X, INC1BUTTON_Y, "FRO%");
         int16_t regVal = mb.Hreg(56);
-        slider[0].drawSliderH(100);
-        slider[0].drawSliderH(0);
-        slider[0].drawSliderH(regVal);
-        mb.Coil(regs[lastSlider], 0);
-        lastSlider = 10;
-        mb.Coil(regs[10], 1);
+        drawSliderChange(regVal);
+        selectSlider(10);
       }
     }
 
     if ((x > INC2BUTTON_X) && (x < (INC2BUTTON_X + AXISBUTTON_W))) {
       if ((y > INC2BUTTON_Y) && (y <= (INC2BUTTON_Y + AXISBUTTON_H))) {
-        selectSlider(INC2BUTTON_X, INC2BUTTON_Y, "RRO%");
+        selectedButton(INC2BUTTON_X, INC2BUTTON_Y, "RRO%");
         int16_t regVal = mb.Hreg(57);
-        slider[0].drawSliderH(100);
-        slider[0].drawSliderH(0);
-        slider[0].drawSliderH(regVal);
-        mb.Coil(regs[lastSlider], 0);
-        lastSlider = 11;
-        mb.Coil(regs[11], 1);
+        drawSliderChange(regVal);
+        selectSlider(11);
       }
     }
 
     if ((x > INC3BUTTON_X) && (x < (INC3BUTTON_X + AXISBUTTON_W))) {
       if ((y > INC3BUTTON_Y) && (y <= (INC3BUTTON_Y + AXISBUTTON_H))) {
-        selectSlider(INC3BUTTON_X, INC3BUTTON_Y, "SRO%");
+        selectedButton(INC3BUTTON_X, INC3BUTTON_Y, "SRO%");
         int16_t regVal = mb.Hreg(58);
-        slider[0].drawSliderH(100);
-        slider[0].drawSliderH(0);
-        slider[0].drawSliderH(regVal);
-        mb.Coil(regs[lastSlider], 0);
-        lastSlider = 12;
-        mb.Coil(regs[12], 1);
+        drawSliderChange(regVal);
+        selectSlider(12);
       }
     }
     
-    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
-      if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
+    if ((x > BACKBUTTON_X) && (x < (BACKBUTTON_X + AXISBUTTON_W))) {
+      if ((y > BACKBUTTON_Y) && (y <= (BACKBUTTON_Y + AXISBUTTON_H))) {
         slider[0].drawSliderH(100);
         lastSlider = 0;
         mb.Coil(regs[10], 0);
         mb.Coil(regs[11], 0);
         mb.Coil(regs[12], 0);
-        drawMainPage();
+        drawDROPage();
       }
     }
   }

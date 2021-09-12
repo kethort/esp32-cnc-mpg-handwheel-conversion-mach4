@@ -70,8 +70,8 @@ TFT_eSPI_TouchUI slider[3];
 #define INC3BUTTON_X 164
 #define INC3BUTTON_Y 195
 
-#define MAINBUTTON_X 85
-#define MAINBUTTON_Y 265
+#define BACKBUTTON_X 85
+#define BACKBUTTON_Y 265
 
 #define IP_ADDR_X 120
 #define IP_ADDR_Y 20
@@ -102,7 +102,8 @@ float lastDRODecimal[6];
 #define SCR_TMOUT 30000
 uint32_t screenTime = 0; 
 bool screenActive = true;
-bool mainPageLoad;
+bool droPageLoad;
+bool sliderPageLoad = true;
 
 void setup(void)
 {
@@ -150,10 +151,17 @@ void setup(void)
 
   // Slider registers (56 - 58)
   mb.addHreg(56);
+  //mb.Hreg(56, -1);
   mb.addHreg(57);
+  //mb.Hreg(57, -1);
   mb.addHreg(58);
+  //mb.Hreg(58, -1);
+
+  // Control register 59
+  //mb.addHreg(59);
+  //mb.Hreg(59, 66);
   
-  drawMainPage();
+  drawDROPage();
 
   slider[0].initSliderH(&tft, SLIDER_MIN, SLIDER_MAX, 50, 80, SLIDER_BTN_W, SLIDER_BAR_L, TFT_WHITE, TFT_DARKGREY, TFT_BLACK, 1, 0);
   screenTime = millis();
@@ -189,7 +197,7 @@ void loop() {
   switch(pageNum) {
     case 1:
       updateDROs();
-      getTouchMainPage();
+      getTouchDROPage();
       break;
     case 2:
       getTouchControlPage();
@@ -320,121 +328,4 @@ void touch_calibrate() {
       f.close();
     }
   }
-}
-
-void getTouchMainPage() {
-  uint16_t x, y;
-
-  if (tft.getTouch(&x, &y)) {
-    screenTime = millis();
-    
-    if (!screenActive) {
-      screenActive = true;
-      digitalWrite(SCRLED, HIGH);
-    }
-
-    if ((x > CONTROLBUTTON_X) && (x < (CONTROLBUTTON_X + AXISBUTTON_W))) {
-      if ((y > CONTROLBUTTON_Y) && (y <= (CONTROLBUTTON_Y + AXISBUTTON_H))) {
-        drawControlPage();
-      }
-    }
-    
-    if ((x > MPGBUTTON_X) && (x < (MPGBUTTON_X + AXISBUTTON_W))) {
-      if ((y > MPGBUTTON_Y) && (y <= (MPGBUTTON_Y + AXISBUTTON_H))) {
-        drawMPGPage();
-      }
-    }
-
-    if ((x > SLIDERBUTTON_X) && (x < (SLIDERBUTTON_X + AXISBUTTON_W))) {
-      if ((y > SLIDERBUTTON_Y) && (y <= (SLIDERBUTTON_Y + AXISBUTTON_H))) {
-        drawSliderPage();
-      }
-    }
-  }
-}
-
-void drawMainPage() {
-  pageNum = 1;
-  
-  tft.fillScreen(TFT_BLACK);
-  
-  char strBfr[80];
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  sprintf(strBfr, "%s", WiFi.localIP().toString().c_str());
-  tft.drawString(strBfr, IP_ADDR_X, IP_ADDR_Y); 
-
-  drawDROs();
-  drawMainNavButtons();
-}
-
-void drawMainNavButtons() {
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  
-  tft.fillRect(CONTROLBUTTON_X, CONTROLBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.drawString("Ctrl", CONTROLBUTTON_X + (AXISBUTTON_W / 2), CONTROLBUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(MPGBUTTON_X, MPGBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.drawString("MPG", MPGBUTTON_X + (AXISBUTTON_W / 2), MPGBUTTON_Y + (AXISBUTTON_H / 2)); 
-  
-  tft.fillRect(SLIDERBUTTON_X, SLIDERBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.drawString("Speed", SLIDERBUTTON_X + (AXISBUTTON_W / 2), SLIDERBUTTON_Y + (AXISBUTTON_H / 2)); 
-}
-
-void drawMainPageButton() {
-   tft.fillRect(MAINBUTTON_X, MAINBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-   tft.setTextColor(TFT_BLACK);
-   tft.setTextSize(2);
-   tft.setTextDatum(MC_DATUM);
-   tft.drawString("Main", MAINBUTTON_X + (AXISBUTTON_W / 2), MAINBUTTON_Y + (AXISBUTTON_H / 2));
-}
-
-void drawDROValue(byte axisID, byte hreg1, byte hreg2) {
-  int16_t droPrefix = mb.Hreg(hreg1);
-  int16_t droPostfix = mb.Hreg(hreg2);
-  float droDecimal = droPrefix + (droPostfix / 10000.0);
-
-  if(droDecimal != lastDRODecimal[axisID] || mainPageLoad) {
-    screenTime = millis();
-    // erase the last value
-    tft.setTextColor(TFT_BLACK);
-    tft.drawFloat(lastDRODecimal[axisID], 4, 140, (30 * axisID) + 70); 
-    // draw the current value  
-    tft.setTextColor(TFT_WHITE);
-    tft.drawFloat(droDecimal, 4, 140, (30 * axisID) + 70);  
-  }
-  lastDRODecimal[axisID] = droDecimal;  
-}
-
-void updateDROs() { 
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  
-  drawDROValue(0, 99, 100);
-  drawDROValue(1, 101, 102);
-  drawDROValue(2, 103, 104);
-  drawDROValue(3, 105, 106);
-  drawDROValue(4, 107, 108);
-  drawDROValue(5, 109, 110);
-}
-
-void drawDROs() {
-  mainPageLoad = true;
-  
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-
-  tft.setTextColor(TFT_WHITE);
-  tft.drawString("X: ", 40, 70);
-  tft.drawString("Y: ", 40, 100);
-  tft.drawString("Z: ", 40, 130);
-  tft.drawString("A: ", 40, 160);
-  tft.drawString("B: ", 40, 190);
-  tft.drawString("C: ", 40, 220);
-
-  updateDROs();
-  mainPageLoad = false;
 }

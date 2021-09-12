@@ -90,9 +90,9 @@ void getTouchMPGPage() {
       }
     }
   
-    if ((x > MAINBUTTON_X) && (x < (MAINBUTTON_X + AXISBUTTON_W))) {
-      if ((y > MAINBUTTON_Y) && (y <= (MAINBUTTON_Y + AXISBUTTON_H))) {
-        drawMainPage();
+    if ((x > BACKBUTTON_X) && (x < (BACKBUTTON_X + AXISBUTTON_W))) {
+      if ((y > BACKBUTTON_Y) && (y <= (BACKBUTTON_Y + AXISBUTTON_H))) {
+        drawDROPage();
       }
     }
   }
@@ -104,7 +104,7 @@ void drawMPGPage() {
   tft.fillScreen(TFT_BLACK);
   drawAxisButtons();
   drawIncButtons();
-  drawMainPageButton();
+  drawBackButton();
 
   switch(lastAxis) {
     case 0:
