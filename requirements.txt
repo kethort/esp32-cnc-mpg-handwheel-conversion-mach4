@@ -6,5 +6,4 @@ Pillow==8.3.2
 psutil==5.7.3
 py2exe==0.10.1.0
 six==1.15.0
-UNKNOWN==0.0.0
 wxPython==4.1.1

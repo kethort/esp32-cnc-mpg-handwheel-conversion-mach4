@@ -19,8 +19,11 @@ mc.mcMpgSetCountsPerDetent(inst, 11, 4)
 local modbusStatusReg = mc.mcRegGetHandle(inst, "mbcntl/status")
 local modbusFunc0ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function0/rc") 
 local modbusFunc1ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function1/rc")
+local modbusFunc2ErrorReg = mc.mcRegGetHandle(inst, "ModbusMPG/function2/rc")
 
 local modbusMPGEncoderCountsReg = mc.mcRegGetHandle(inst, "ModbusMPG/MPGEnc")
+
+-- the MPG Handwheel will use software inputs 54-63 in the Mach4 Configuration
 local xAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT54)
 local yAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT55)
 local zAxisSelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT56)
@@ -126,7 +129,8 @@ end
 function modbusIsRunning()
 	ModbusMPG.modbusRunning = mc.mcRegGetValueString(modbusStatusReg) == "RUNNING"
 	ModbusMPG.modbusRunning = ModbusMPG.modbusRunning and mc.mcRegGetValue(modbusFunc0ErrorReg) == mc.MERROR_NOERROR
-	ModbusMPG.modbusRunning = (ModbusMPG.modbusRunning and mc.mcRegGetValue(modbusFunc1ErrorReg) == mc.MERROR_NOERROR) and true or false
+	ModbusMPG.modbusRunning = ModbusMPG.modbusRunning and mc.mcRegGetValue(modbusFunc1ErrorReg) == mc.MERROR_NOERROR
+	ModbusMPG.modbusRunning = (ModbusMPG.modbusRunning and mc.mcRegGetValue(modbusFunc2ErrorReg) == mc.MERROR_NOERROR) and true or false
 end
 
 function ModbusMPG.restartModbusConnection()
@@ -149,7 +153,6 @@ function ModbusMPG.RunModbusMPG()
 	if lastMPGInc ~= ModbusMPG.mpgSelectedInc then
 		setMPGIncrement()
 		lastMPGInc = ModbusMPG.mpgSelectedInc
-		--mc.mcCntlSetLastError(inst, 'Axis: ' .. tostring(ModbusMPG.mpgSelectedAxis - 1) .. 'Inc: ' .. tostring(ModbusMPG.mpgSelectedInc))
 	end
 
 	if tonumber(ModbusMPG.mpgSelectedAxis) > 0 and mpgEnabled then

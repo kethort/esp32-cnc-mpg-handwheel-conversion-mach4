@@ -1,7 +1,10 @@
 
+--ModbusMPG module
+package.loaded.ModbusMPG = nil
+ModbusMPG = require "ModbusMPG"
+
 axisID = 0
 droRegsPos = 1
-lastSelectedSlider = 0
 
 axisDRORegs = {
 	[1] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO0'),
@@ -18,10 +21,16 @@ axisDRORegs = {
 	[12] = mc.mcRegGetHandle(inst, 'ModbusMPG/axisDRO11')
 }
 
-local slider1ValReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider1')
-local slider2ValReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider2')
-local slider3ValReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider3')
+local slider1ReadReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider1Rd')
+local slider2ReadReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider2Rd')
+local slider3ReadReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider3Rd')
+
+local slider1WriteReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider1Wr')
+local slider2WriteReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider2Wr')
+local slider3WriteReg = mc.mcRegGetHandle(inst, 'ModbusMPG/Slider3Wr')
 
 local slider1SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT51)
 local slider2SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT52)
 local slider3SelReg = mc.mcSignalGetHandle(inst, mc.ISIG_INPUT53)
+
+local controlReg = mc.mcRegGetHandle(inst, 'ModbusMPG/ControlReg')

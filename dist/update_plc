@@ -1,4 +1,6 @@
 
+ModbusMPG.RunModbusMPG()
+
 function sendDROFloatsThroughModbus()
 	local axisPos = mc.mcAxisGetPos(inst, axisID)
 	axisPos = tonumber(string.format('%0.4f', tostring(axisPos)))
@@ -25,18 +27,44 @@ function sendDROFloatsThroughModbus()
 	end
 end
 
-function updateMPGSliderVals()
+function updateMachSliderVals()
 	if mc.mcSignalGetState(slider1SelReg) == 1 then 
-		local slider1Val = mc.mcRegGetValueLong(slider1ValReg) * 2.5
+		local slider1Val = mc.mcRegGetValueLong(slider1ReadReg) * 2.5
 		mc.mcCntlSetFRO(inst, slider1Val)
 	elseif mc.mcSignalGetState(slider2SelReg) == 1 then
-		local slider2Val = mc.mcRegGetValueLong(slider2ValReg)
+		local slider2Val = mc.mcRegGetValueLong(slider2ReadReg)
 		mc.mcCntlSetRRO(inst, slider2Val)		
 	elseif mc.mcSignalGetState(slider3SelReg) == 1 then
-		local slider3Val = mc.mcRegGetValueLong(slider3ValReg)
+		local slider3Val = mc.mcRegGetValueLong(slider3ReadReg)
 		mc.mcSpindleSetOverride(inst, (slider3Val / 100) + 0.5)
 	end
 end
 
+function updateMPGSliderVals()
+	local FROValue = mc.mcCntlGetFRO(inst) / 2.5
+	--mc.mcCntlSetLastError(inst, tostring(FROValue / 2.5))
+	mc.mcRegSetValueLong(slider1WriteReg, FROValue)
+	
+	local RROValue = mc.mcCntlGetRRO(inst)
+	--mc.mcCntlSetLastError(inst, tostring(RROValue))
+	mc.mcRegSetValueLong(slider2WriteReg, RROValue)
+	
+	local SROValue = mc.mcSpindleGetOverride(inst)
+	--mc.mcCntlSetLastError(inst, tostring((SROValue * 100) - 50))
+	mc.mcRegSetValueLong(slider3WriteReg, (SROValue * 100) - 50)
+end
+
+function handleControlReg()
+	local controlRegVal = mc.mcRegGetValueLong(controlReg)
+
+	-- 555 is for initializing the MPG slider values
+	if controlRegVal == 555 then
+		updateMPGSliderVals()
+	elseif controlRegVal == 444 then -- 444 ends the slider initialization in MPG
+		mc.mcRegSetValueLong(slider1WriteReg, 555)
+	end
+end
+
+handleControlReg()
+updateMachSliderVals()
 sendDROFloatsThroughModbus()
-updateMPGSliderVals()

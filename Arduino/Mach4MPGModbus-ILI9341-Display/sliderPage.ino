@@ -48,20 +48,19 @@ void drawSliderChange(int16_t regVal) {
 void getTouchSliderPage() {
   uint16_t x, y;
 
-/*
   // init slider vals
-  if (sliderPageLoad) {
-    mb.Hreg(59, 1);
-    
-    if (mb.Hreg(58) > -1) {
-      delay(10);
-      mb.Hreg(59, 0);
-      sliderPageLoad = false;
+  if (mb.Hreg(111) == 555) {
+      mb.Hreg(59, -1);
+      return;
   }
-    
-    return;
-  }
-*/
+  
+  if (mb.Hreg(59) == 555) {
+      mb.Hreg(56, mb.Hreg(111));
+      mb.Hreg(57, mb.Hreg(112));
+      mb.Hreg(58, mb.Hreg(113));
+      mb.Hreg(59, 444);
+      return;
+  }  
   
   if (tft.getTouch(&x, &y)) {
     screenTime = millis();

@@ -146,20 +146,18 @@ void setup(void)
   mb.addHreg(55); // encoder counts modbus register
 
   // DRO registers (99 - 110)
-  for(int i = 99; i < 111; i++)
+  // Slider Mach4 write registers (111 - 113)
+  for(int i = 99; i < 114; i++)
     mb.addHreg(i);
 
-  // Slider registers (56 - 58)
+  // Slider Mach4 read registers (56 - 58)
   mb.addHreg(56);
-  //mb.Hreg(56, -1);
   mb.addHreg(57);
-  //mb.Hreg(57, -1);
   mb.addHreg(58);
-  //mb.Hreg(58, -1);
 
   // Control register 59
-  //mb.addHreg(59);
-  //mb.Hreg(59, 66);
+  mb.addHreg(59);
+  mb.Hreg(59, 555);
   
   drawDROPage();
 
