@@ -34,7 +34,7 @@ void drawDROPage() {
   
   tft.fillScreen(TFT_BLACK);
   
-  char strBfr[80];
+  char strBfr[50];
   tft.setTextColor(TFT_WHITE);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);

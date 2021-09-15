@@ -98,6 +98,7 @@ byte lastInc = 50;
 byte lastSlider = 50;
 byte pageNum;
 float lastDRODecimal[6];
+uint32_t lastUpdatePercent;
 
 #define SCR_TMOUT 30000
 uint32_t screenTime = 0; 
@@ -147,7 +148,7 @@ void setup(void)
 
   // DRO registers (99 - 110)
   // Slider Mach4 write registers (111 - 113)
-  for(int i = 99; i < 114; i++)
+  for(int i = 99; i < 115; i++)
     mb.addHreg(i);
 
   // Slider Mach4 read registers (56 - 58)
@@ -207,6 +208,36 @@ void loop() {
       getTouchSliderPage();
       break;
   }
+}
+
+void drawOTAUpdateScreen() {
+  pageNum = 20;
+  
+  tft.fillScreen(TFT_BLACK); 
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("Updating", 100, 100);
+  tft.drawString("Firmware", 100, 130); 
+}
+
+void showOTAUpdateProgress(unsigned int progress, unsigned int total) {
+  char strBfr[50];
+  
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  sprintf(strBfr, "%s", lastUpdatePercent);
+  tft.drawString(strBfr, 100, 160);
+  lastUpdatePercent = (progress / (total / 100));
+  memset(strBfr, 0, sizeof(strBfr));
+
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  sprintf(strBfr, "%u%%\r", (progress / (total / 100)));
+  tft.drawString(strBfr, 100, 160);
+  memset(strBfr, 0, sizeof(strBfr));
 }
 
 void setupOTA(const char* nameprefix) {
