@@ -148,6 +148,7 @@ void setup(void)
 
   // DRO registers (99 - 110)
   // Slider Mach4 write registers (111 - 113)
+  // Mach4 status register (114)
   for(int i = 99; i < 115; i++)
     mb.addHreg(i);
 

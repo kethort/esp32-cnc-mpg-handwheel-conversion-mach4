@@ -41,6 +41,7 @@ Res11=axisDRO11
 Res12=Slider1Wr
 Res13=Slider2Wr
 Res14=Slider3Wr
+Res15=StatusReg
 [ModbusDevice/ModbusMPG/function0/axisDRO0]
 Desc=axisDRO0
 Type=256
@@ -113,6 +114,11 @@ RegIndex=0
 BitIndex=0
 [ModbusDevice/ModbusMPG/function0/Slider3Wr]
 Desc=Slider3 Mach init Value
+Type=256
+RegIndex=0
+BitIndex=0
+[ModbusDevice/ModbusMPG/function0/StatusReg]
+Desc=Mach4 Status Reg
 Type=256
 RegIndex=0
 BitIndex=0

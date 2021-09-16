@@ -45,7 +45,9 @@ void drawSliderChange(int16_t regVal) {
   slider[0].drawSliderH(regVal);
 }
 
-void initSliderValues() {
+void getTouchSliderPage() {
+  uint16_t x, y;
+
   // using the MPG control reg and Mach4 status regs to 
   // delegate timing in communication 
   if (mb.Hreg(114) == 555) {
@@ -60,11 +62,7 @@ void initSliderValues() {
       mb.Hreg(59, 444);
       return;
   }    
-}
-
-void getTouchSliderPage() {
-  uint16_t x, y;
-
+  
   if (tft.getTouch(&x, &y)) {
     screenTime = millis();
     
