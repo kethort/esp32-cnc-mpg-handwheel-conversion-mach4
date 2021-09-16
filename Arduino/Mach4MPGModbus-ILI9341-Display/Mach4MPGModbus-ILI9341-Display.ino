@@ -217,8 +217,8 @@ void drawOTAUpdateScreen() {
   tft.setTextColor(TFT_WHITE);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  tft.drawString("Updating", 100, 100);
-  tft.drawString("Firmware", 100, 130); 
+  tft.drawString("Updating", 125, 100);
+  tft.drawString("Firmware", 125, 130); 
 }
 
 void showOTAUpdateProgress(unsigned int progress, unsigned int total) {
@@ -227,16 +227,16 @@ void showOTAUpdateProgress(unsigned int progress, unsigned int total) {
   tft.setTextColor(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  sprintf(strBfr, "%s", lastUpdatePercent);
-  tft.drawString(strBfr, 100, 160);
+  sprintf(strBfr, "%u%%", lastUpdatePercent);
+  tft.drawString(strBfr, 125, 160);
   lastUpdatePercent = (progress / (total / 100));
   memset(strBfr, 0, sizeof(strBfr));
 
   tft.setTextColor(TFT_WHITE);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  sprintf(strBfr, "%u%%\r", (progress / (total / 100)));
-  tft.drawString(strBfr, 100, 160);
+  sprintf(strBfr, "%u%%", (progress / (total / 100)));
+  tft.drawString(strBfr, 125, 160);
   memset(strBfr, 0, sizeof(strBfr));
 }
 
@@ -251,43 +251,21 @@ void setupOTA(const char* nameprefix) {
   delete[] fullhostname;
 
   ArduinoOTA.onStart([]() {
-#ifdef DEBUG
-    String type;
-    if (ArduinoOTA.getCommand() == U_FLASH)
-      type = "sketch";
-    else // U_SPIFFS
-      type = "filesystem";
-
-    Serial.println("Start updating " + type);
-#endif
+    drawOTAUpdateScreen();
   });
   
   ArduinoOTA.onEnd([]() {
-#ifdef DEBUG
-    Serial.println("\nEnd");
-#endif
+    // shut the screen off, user needs to shut off
+    // device, wait about 10 secs and power back on
+    screenActive = false;
+    digitalWrite(SCRLED, LOW);
   });
   
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-#ifdef DEBUG
-    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-#endif
+    showOTAUpdateProgress(progress, total);
   });
   
   ArduinoOTA.onError([](ota_error_t error) {
-#ifdef DEBUG
-    Serial.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) 
-      Serial.println("\nAuth Failed");
-    else if (error == OTA_BEGIN_ERROR) 
-      Serial.println("\nBegin Failed");
-    else if (error == OTA_CONNECT_ERROR) 
-      Serial.println("\nConnect Failed");
-    else if (error == OTA_RECEIVE_ERROR) 
-      Serial.println("\nReceive Failed");
-    else if (error == OTA_END_ERROR) 
-      Serial.println("\nEnd Failed");
-#endif
   });
 
   ArduinoOTA.begin();
