@@ -251,14 +251,13 @@ void setupOTA(const char* nameprefix) {
   delete[] fullhostname;
 
   ArduinoOTA.onStart([]() {
+    // turn the screen on if it's off
+    screenActive = true;
+    digitalWrite(SCRLED, HIGH);
     drawOTAUpdateScreen();
   });
   
   ArduinoOTA.onEnd([]() {
-    // shut the screen off, user needs to shut off
-    // device, wait about 10 secs and power back on
-    screenActive = false;
-    digitalWrite(SCRLED, LOW);
   });
   
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
