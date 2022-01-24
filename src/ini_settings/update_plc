@@ -54,17 +54,5 @@ function updateMPGSliderVals()
 	mc.mcRegSetValueLong(slider3WriteReg, (SROValue * 100) - 50)
 end
 
-function handleControlReg()
-	local controlRegVal = mc.mcRegGetValueLong(controlReg)
-
-	-- 555 is for initializing the MPG slider values
-	if controlRegVal == 555 then
-		updateMPGSliderVals()
-	elseif controlRegVal == 444 then -- 444 ends the slider initialization in MPG
-		mc.mcRegSetValueLong(slider1WriteReg, 555)
-	end
-end
-
-handleControlReg()
 updateMachSliderVals()
 sendDROFloatsThroughModbus()
