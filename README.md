@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="/img/mpg_ins.PNG" width="700"/>
+  <img src="/img/mpg-ins.PNG" width="700"/>
 </p>
 
 ## Demonstration & Assembly
