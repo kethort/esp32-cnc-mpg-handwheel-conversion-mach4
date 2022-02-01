@@ -65,66 +65,7 @@ https://github.com/tzapu/WiFiManager
    
 <p align="center">
   <img src="/img/wizard.PNG" width="300"/>
-</p>
-
-## Parts List (Amazon links)
-1.  [MPG Handwheel](https://www.amazon.com/gp/product/B01E6VTZHC/ref=ppx_yo_dt_b_asin_title_o07_s00?ie=UTF8&psc=1)
-2.  [Lipo Battery](https://www.amazon.com/gp/product/B07BTRLKPT/ref=ppx_yo_dt_b_asin_title_o04_s04?ie=UTF8&psc=1)
-3.  [Lithium Battery Charger Module](https://www.amazon.com/gp/product/B082XJXQS6/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1)
-4.  [Boost Converter](https://www.amazon.com/gp/product/B07XG323G8/ref=ppx_yo_dt_b_asin_title_o03_s01?ie=UTF8&psc=1)
-5.  [ESP32](https://www.amazon.com/Xiuxin-Development-Dual-Mode-Bluetooth-Antenna/dp/B079PVCF2G/ref=sxts_sxwds-bia-wc-rsf-lq2a1_0?cv_ct_cx=esp32&dchild=1&keywords=esp32&pd_rd_i=B079PVCF2G&pd_rd_r=a13a37f2-296c-44a8-9513-68ab5bfbd9ad&pd_rd_w=ehkKD&pd_rd_wg=YDw1j&pf_rd_p=52f9c563-bb87-44f4-9d9d-e1c03402d90f&pf_rd_r=R9PF5M9ACRSXKMZDT689&psc=1&qid=1611217599&sr=1-1-d3e58e83-6458-471c-a87e-175495b96a10)
-
-<p align="center">
-  <img src="/img/thuh_parts.jpg" width="700"/>
-</p>
-
-## Wiring - Display
-ESP32 to ILI9341 Display:
-    ESP32 GND -> ILI9341 GND <br>
-    ESP32 3V3 -> ILI9341 VCC <br>
-    ESP32 D27 -> ILI9341 LED <br>
-    ESP32 D15 -> ILI9341 CS <br>
-    ESP32 EN -> ILI9341 RESET <br>
-    ESP32 D13 -> ILI9341 D/C <br>
-    ESP32 D23 -> ILI9341 SDI <br>
-    ESP32 D23 -> ILI9341 T_DIN <br>
-    ESP32 D18 -> ILI9341 SCK <br>
-    ESP32 D18 -> ILI9341 T_CLK <br>
-    ESP32 D21 -> ILI9341 T_CS <br>
-    ESP32 D19 -> ILI9341 T_OUT <br> 
-    ESP32 D2 -> Encoder A+ <br>
-    ESP32 D4 -> Encoder B+ <br>
-    
-
-<p align="center">
-  <img src="img/esp32-ili9341-wiring.png" width="800"/>
-</p>
-    
-## Wiring - No Display
-battery -> TP4056 Charger Module -> XL6009 Boost Convert (3.3 to 5V) -> MPG Estop switch -> ESP32 VIN/GND <br> <br>
-(The LED on the MPG PCB is connected to the 3.3v and GND terminals on the ESP32) <br> <br>
-MPG PCB: <br>
-    ESP32 GND    -> COM <br>
-    ESP32 Pin 2  -> A+ <br>
-    ESP32 Pin 4  -> B+ <br>
-    ESP32 Pin 13 -> X Axis <br>
-    ESP32 Pin 14 -> Y Axis <br>
-    ESP32 Pin 27 -> Z Axis <br>
-    ESP32 Pin 25 -> MPG Enable Switch <br>
-    ESP32 Pin 32 -> A Axis <br>
-    ESP32 Pin 35 -> B Axis (8k ohm pullup to 3.3v) <br>
-    ESP32 Pin 34 -> C Axis (8k ohm pullup to 3.3v) <br>
-    ESP32 Pin 15 -> Inc 1 <br>
-    ESP32 Pin 21 -> Inc 2 <br>
-    ESP32 Pin 22 -> Inc 3 <br> <br>
-    
-## Wiring an Ethernet Port
-W5500 Lite: <br>
-ESP32 Pin 23 -> MOSI <br>
-ESP32 Pin 19 -> MISO <br>
-ESP32 Pin 18 -> SCLK <br>
-ESP32 Pin 5  -> CS <br>
-ESP32 Pin 26 -> RST <br>
+</p>   
 
 ## PCB Gerber File & 3d print files for Display included
 Original 3d print file creator: https://www.thingiverse.com/thing:4539827
