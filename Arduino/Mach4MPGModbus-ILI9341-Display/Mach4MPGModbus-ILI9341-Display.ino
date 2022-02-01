@@ -119,9 +119,7 @@ void setup(void)
   // call screen calibration
   touch_calibrate();
 
-  // clear screen
-  tft.fillScreen(TFT_BLACK);
-
+  drawWifiUpdateScreen();
   WiFiManager wifiManager;
   wifiManager.autoConnect("MPG_Handwheel");
 
@@ -211,8 +209,19 @@ void loop() {
   }
 }
 
+void drawWifiUpdateScreen() {
+  pageNum = 0;
+  
+  tft.fillScreen(TFT_BLACK); 
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString("WiFi", 125, 100);
+  tft.drawString("Connecting", 125, 130); 
+}
+
 void drawOTAUpdateScreen() {
-  pageNum = 20;
+  pageNum = 0;
   
   tft.fillScreen(TFT_BLACK); 
   tft.setTextColor(TFT_WHITE);
