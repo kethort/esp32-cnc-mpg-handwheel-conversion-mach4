@@ -24,20 +24,25 @@ https://github.com/tzapu/WiFiManager
 3. Select the COM port of the programmer in the NodeMCU program.
 4. Select the Mach4MPGModbus-ILI9341-Display.ino.bin file from the fw-build folder and press the Flash NodeMCU button to flash the firmware to the ESP32.
 5. Reboot the ESP32.
+
+<p align="center">
+  <img src="/img/fw-upload.PNG" width="500"/>
+</p>
+
 6. The ESP32 device should show up in the list of network access points. 
 
 <p align="center">
   <img src="/img/access_point.png" width="250"/>
 </p>
 
-4. Connect to this access point and navigate to 192.168.4.1 in a browser. 
-5. Press the "Configure Wifi" button.
+7. Connect to this access point and navigate to 192.168.4.1 in a browser. 
+8. Press the "Configure Wifi" button.
 
 <p align="center">
   <img src="/img/captive_portal.png" width="300"/>
 </p>
 
-6. Find your network access point and connect to it by providing your network credentials.
+9. Find your network access point and connect to it by providing your network credentials.
 
 <p align="center">
   <img src="/img/captive_portal2.PNG" width="250"/>
