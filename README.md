@@ -9,14 +9,8 @@
 </p>
 
 ## Demonstration & Assembly
-https://www.youtube.com/watch?v=FvmKIaZbhRo <br>
 https://www.youtube.com/watch?v=sGhttK0reT0&t=2s <br>
 https://www.youtube.com/watch?v=5fpQ3xS1Tu8&t=2s
-
-## Required Arduino Libraries
-https://github.com/emelianov/modbus-esp8266 <br>
-https://github.com/madhephaestus/ESP32Encoder <br>
-https://github.com/tzapu/WiFiManager
 
 ## ESP32 Firmware and Network Setup
 1. Download NodeMCU-PyFlasher.exe program from here: https://github.com/marcelstoer/nodemcu-pyflasher/releases
@@ -56,7 +50,7 @@ https://github.com/tzapu/WiFiManager
 </p>
 
 2. Launch the MPGInstaller.exe from the dist folder of the repo.
-3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. (if the ESP32 device is already connected to the network, the IP address should auto-populate)
+3. Select the Mach4 profile you want to update, enter the IP address of the ESP32 and press install. (if the ESP32 device is already connected to the network, and in the ARP table, the IP address should auto-populate)
 
 <p align="center">
   <img src="/img/mpg_installer.PNG" width="300"/>
@@ -76,7 +70,7 @@ https://github.com/tzapu/WiFiManager
 </p>   
 
 ## PCB Gerber File & 3d print files for Display included
-Original 3d print file creator: https://www.thingiverse.com/thing:4539827
+Original 3d print: https://www.thingiverse.com/thing:4539827
 
 <p align="center">
   <img src="/img/PCB.PNG" width="300"/>
