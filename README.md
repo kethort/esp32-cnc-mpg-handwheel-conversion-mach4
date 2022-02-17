@@ -19,9 +19,12 @@ https://github.com/madhephaestus/ESP32Encoder <br>
 https://github.com/tzapu/WiFiManager
 
 ## ESP32 Firmware and Network Setup
-1. Upload the Mach4MPGModbus.ino file to the ESP32 using the Arduino (or other) IDE.
-2. Reboot the ESP32.
-3. The ESP32 device should show up in the list of network access points. 
+1. Download NodeMCU-PyFlasher.exe program from here: https://github.com/marcelstoer/nodemcu-pyflasher/releases
+2. Connect a USB to FTDI or CP2102 to FTL programmer to the ESP32 PCB at the programmer port. 
+3. Select the COM port of the programmer in the NodeMCU program.
+4. Select the Mach4MPGModbus-ILI9341-Display.ino.bin file from the fw-build folder and press the Flash NodeMCU button to flash the firmware to the ESP32.
+5. Reboot the ESP32.
+6. The ESP32 device should show up in the list of network access points. 
 
 <p align="center">
   <img src="/img/access_point.png" width="250"/>
