@@ -13,7 +13,7 @@ https://www.youtube.com/watch?v=sGhttK0reT0&t=2s <br>
 https://www.youtube.com/watch?v=5fpQ3xS1Tu8&t=2s
 
 ## ESP32 Firmware and Network Setup
-1. Download NodeMCU-PyFlasher.exe program from here: https://github.com/marcelstoer/nodemcu-pyflasher/releases
+1. Download NodeMCU-PyFlasher.exe program from here: https://github.com/marcelstoer/nodemcu-pyflasher/releases/tag/v5.0.0
 2. Connect a USB to FTDI or CP2102 to FTL programmer to the ESP32 PCB at the programmer port. 
 3. Select the COM port of the programmer in the NodeMCU program.
 4. Select the Mach4MPGModbus-ILI9341-Display.ino.bin file from the fw-build folder and press the Flash NodeMCU button to flash the firmware to the ESP32.
