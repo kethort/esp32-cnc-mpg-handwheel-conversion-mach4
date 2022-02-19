@@ -372,7 +372,7 @@ class AppWindow(wx.Frame):
 		# backup the Mach4 Machine.ini configuration file
 		self.backup_machine_ini(ini_path, backup_path)
 
-		# convert the Mach4 Machine.ini configuration file into a python dicitonary
+		# convert the Mach4 Machine.ini configuration file into a python dictionary
 		ini_dict = self.machine_ini_to_dict(ini_path)
 		 
 		#  enable the modbus, regfile, and LUA plugins in the Mach4 Machine.ini configuration file
@@ -398,6 +398,14 @@ class AppWindow(wx.Frame):
 		ini_dict['ModbusDevice/ModbusMPG']['IPAddr'] = ip_addr
 
 		# disable MPG 11 in Mach4 Machine.ini configuration file
+		if not ini_dict['Mpg11']:
+			for i in range(0, 12):
+				ini_dict['Mpg' + str(i)]['Enabled'] = 0
+				ini_dict['Mpg' + str(i)]['CountsPerDetent'] = 1
+				ini_dict['Mpg' + str(i)]['AccelPercent'] = 0.0
+				ini_dict['Mpg' + str(i)]['RatePercent'] = 0.0
+				ini_dict['Mpg' + str(i)]['Reversed'] = 0
+
 		ini_dict['Mpg11']['Enabled'] = 0
 
 		# makes a copy of the Mach4 Screen and extracts it's contents into a tmeporary directory
