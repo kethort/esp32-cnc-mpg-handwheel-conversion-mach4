@@ -398,8 +398,9 @@ class AppWindow(wx.Frame):
 		ini_dict['ModbusDevice/ModbusMPG']['IPAddr'] = ip_addr
 
 		# disable MPG 11 in Mach4 Machine.ini configuration file
-		if not ini_dict['Mpg11']:
+		if not 'Mpg11' in ini_dict:
 			for i in range(0, 12):
+				ini_dict['Mpg' + str(i)] = {}
 				ini_dict['Mpg' + str(i)]['Enabled'] = 0
 				ini_dict['Mpg' + str(i)]['CountsPerDetent'] = 1
 				ini_dict['Mpg' + str(i)]['AccelPercent'] = 0.0

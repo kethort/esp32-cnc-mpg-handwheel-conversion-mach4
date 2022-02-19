@@ -7,3 +7,9 @@ Traceback (most recent call last):
   File "MPGInstaller.py", line 77, in __init__
   File "MPGInstaller.py", line 109, in get_device_ip
 NameError: name 'MAC_VENDOR_ID' is not defined
+Traceback (most recent call last):
+  File "MPGInstaller.py", line 1, in <module>
+ModuleNotFoundError: No module named 'wx'
+Traceback (most recent call last):
+  File "MPGInstaller.py", line 1, in <module>
+ModuleNotFoundError: No module named 'wx'
