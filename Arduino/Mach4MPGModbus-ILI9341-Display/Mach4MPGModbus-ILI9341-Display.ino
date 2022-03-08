@@ -88,6 +88,12 @@ TFT_eSPI_TouchUI slider[3];
 #define SLIDERBUTTON_X 164
 #define SLIDERBUTTON_Y 265
 
+#define SPEEDDNBTN_X 5
+#define SPEEDDNBTN_Y 125
+
+#define SPEEDUPBTN_X 164
+#define SPEEDUPBTN_Y 125
+
 #define MPGEN 32
 #define SCRLED 27
 #define ADC0 25
@@ -95,7 +101,7 @@ TFT_eSPI_TouchUI slider[3];
 
 byte lastAxis = 50;
 byte lastInc = 50;
-byte lastSlider = 50;
+byte lastSlider = 0;
 byte pageNum;
 float lastDRODecimal[6];
 uint32_t lastUpdatePercent;

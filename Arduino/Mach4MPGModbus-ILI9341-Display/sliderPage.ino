@@ -23,12 +23,31 @@ void updateSlider(int16_t sliderVal) {
   }
 }
 
+void incrementSlider(int8_t inc) {
+  uint8_t sliderVal = 0;
+  
+  switch (lastSlider) {
+    case 10:
+      sliderVal = ((mb.Hreg(56) == 0) && (inc < 0)) ? 0 : mb.Hreg(56) + inc;
+      break;
+    case 11:
+      sliderVal = ((mb.Hreg(57) == 0) && (inc < 0)) ? 0 : mb.Hreg(57) + inc;
+      break;
+    case 12:
+      sliderVal = ((mb.Hreg(58) == 0) && (inc < 0)) ? 0 : mb.Hreg(58) + inc;
+      break;
+  }
+  sliderVal = constrain(sliderVal, 0, 100);
+
+  updateSlider(sliderVal);
+  slider[0].drawSliderH(sliderVal);
+}
+
 void drawSliderPage() {
   pageNum = 4;
   
   tft.fillScreen(TFT_BLACK);
-  slider[0].drawSliderH(0);
-  
+ 
   drawSliderButtons();
   drawBackButton();
 }
@@ -77,6 +96,18 @@ void getTouchSliderPage() {
       updateSlider(value);
     }
 
+    if ((x > SPEEDDNBTN_X) && (x < (SPEEDDNBTN_X + AXISBUTTON_W))) {
+      if ((y > SPEEDDNBTN_Y) && (y <= (SPEEDDNBTN_Y + AXISBUTTON_H))) {
+        incrementSlider(-1);      
+      }
+    }
+  
+    if ((x > SPEEDUPBTN_X) && (x < (SPEEDUPBTN_X + AXISBUTTON_W))) {
+      if ((y > SPEEDUPBTN_Y) && (y <= (SPEEDUPBTN_Y + AXISBUTTON_H))) {
+        incrementSlider(1);  
+      }
+    }
+    
     if ((x > INC1BUTTON_X) && (x < (INC1BUTTON_X + AXISBUTTON_W))) {
       if ((y > INC1BUTTON_Y) && (y <= (INC1BUTTON_Y + AXISBUTTON_H))) {
         selectedButton(INC1BUTTON_X, INC1BUTTON_Y, "FRO%");
@@ -122,7 +153,19 @@ void drawSliderButtons() {
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
   tft.drawString("FeedRate Sliders:", 120, 20);
-   
+  
+  tft.fillRect(SPEEDDNBTN_X, SPEEDDNBTN_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString(" - ", SPEEDDNBTN_X + (AXISBUTTON_W / 2), SPEEDDNBTN_Y + (AXISBUTTON_H / 2));
+  
+  tft.fillRect(SPEEDUPBTN_X, SPEEDUPBTN_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString(" + ", SPEEDUPBTN_X + (AXISBUTTON_W / 2), SPEEDUPBTN_Y + (AXISBUTTON_H / 2));
+
   tft.fillRect(INC1BUTTON_X, INC1BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
   tft.setTextColor(TFT_BLACK);
   tft.setTextSize(2);
