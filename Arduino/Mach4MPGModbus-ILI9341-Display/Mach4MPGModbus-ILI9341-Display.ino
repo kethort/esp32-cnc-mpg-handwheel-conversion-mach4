@@ -30,7 +30,7 @@ TFT_eSPI_TouchUI slider[3];
 
 // This is the file name used to store the touch coordinate
 // calibration data. Change the name to start a new calibration.
-#define CALIBRATION_FILE "/TouchCalData1"
+#define CALIBRATION_FILE "/TouchCalData2"
 
 // Set REPEAT_CAL to true instead of false to run calibration
 // again, otherwise it will only be done once.
@@ -91,8 +91,10 @@ TFT_eSPI_TouchUI slider[3];
 #define SPEEDDNBTN_X 5
 #define SPEEDDNBTN_Y 125
 
-#define SPEEDUPBTN_X 164
+#define SPEEDUPBTN_X 200
 #define SPEEDUPBTN_Y 125
+
+#define SPEEDINCBTN_W (AXISBUTTON_W / 2)
 
 #define MPGEN 32
 #define SCRLED 27

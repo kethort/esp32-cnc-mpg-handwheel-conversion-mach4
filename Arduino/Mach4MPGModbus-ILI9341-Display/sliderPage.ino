@@ -96,7 +96,7 @@ void getTouchSliderPage() {
       updateSlider(value);
     }
 
-    if ((x > SPEEDDNBTN_X) && (x < (SPEEDDNBTN_X + AXISBUTTON_W))) {
+    if ((x > SPEEDDNBTN_X) && (x < (SPEEDDNBTN_X + SPEEDINCBTN_W))) {
       if ((y > SPEEDDNBTN_Y) && (y <= (SPEEDDNBTN_Y + AXISBUTTON_H))) {
         incrementSlider(-1);      
       }
@@ -154,17 +154,17 @@ void drawSliderButtons() {
   tft.setTextDatum(MC_DATUM);
   tft.drawString("FeedRate Sliders:", 120, 20);
   
-  tft.fillRect(SPEEDDNBTN_X, SPEEDDNBTN_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.fillRect(SPEEDDNBTN_X, SPEEDDNBTN_Y, SPEEDINCBTN_W, AXISBUTTON_H, TFT_DARKGREY);
   tft.setTextColor(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  tft.drawString(" - ", SPEEDDNBTN_X + (AXISBUTTON_W / 2), SPEEDDNBTN_Y + (AXISBUTTON_H / 2));
+  tft.drawString("-", SPEEDDNBTN_X + (SPEEDINCBTN_W / 2), SPEEDDNBTN_Y + (AXISBUTTON_H / 2));
   
-  tft.fillRect(SPEEDUPBTN_X, SPEEDUPBTN_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
+  tft.fillRect(SPEEDUPBTN_X, SPEEDUPBTN_Y, SPEEDINCBTN_W, AXISBUTTON_H, TFT_DARKGREY);
   tft.setTextColor(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  tft.drawString(" + ", SPEEDUPBTN_X + (AXISBUTTON_W / 2), SPEEDUPBTN_Y + (AXISBUTTON_H / 2));
+  tft.drawString("+", SPEEDUPBTN_X + (SPEEDINCBTN_W / 2), SPEEDUPBTN_Y + (AXISBUTTON_H / 2));
 
   tft.fillRect(INC1BUTTON_X, INC1BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
   tft.setTextColor(TFT_BLACK);
