@@ -1,3 +1,5 @@
+bool droPageLoad;
+
 void getTouchDROPage() {
   uint16_t x, y;
 
@@ -9,22 +11,16 @@ void getTouchDROPage() {
       digitalWrite(SCRLED, HIGH);
     }
 
-    if ((x > CONTROLBUTTON_X) && (x < (CONTROLBUTTON_X + AXISBUTTON_W))) {
-      if ((y > CONTROLBUTTON_Y) && (y <= (CONTROLBUTTON_Y + AXISBUTTON_H))) {
-        drawControlPage();
-      }
-    }
-    
-    if ((x > MPGBUTTON_X) && (x < (MPGBUTTON_X + AXISBUTTON_W))) {
-      if ((y > MPGBUTTON_Y) && (y <= (MPGBUTTON_Y + AXISBUTTON_H))) {
-        drawMPGPage();
-      }
+    if (boundingBoxPressed(x, y, CONTROLBUTTON_X, (CONTROLBUTTON_X + MIDBUTTON_W), CONTROLBUTTON_Y, (CONTROLBUTTON_Y + MIDBUTTON_H))) {
+      drawControlPage();
     }
 
-    if ((x > SLIDERBUTTON_X) && (x < (SLIDERBUTTON_X + AXISBUTTON_W))) {
-      if ((y > SLIDERBUTTON_Y) && (y <= (SLIDERBUTTON_Y + AXISBUTTON_H))) {
-        drawSliderPage();
-      }
+    if (boundingBoxPressed(x, y, MPGBUTTON_X, (MPGBUTTON_X + MIDBUTTON_W), MPGBUTTON_Y, (MPGBUTTON_Y + MIDBUTTON_H))) {
+      drawMPGPage();
+    }
+
+    if (boundingBoxPressed(x, y, SPEEDBUTTON_X, (SPEEDBUTTON_X + MIDBUTTON_W), SPEEDBUTTON_Y, (SPEEDBUTTON_Y + MIDBUTTON_H))) {
+      drawSliderPage();
     }
   }
 }
@@ -46,26 +42,9 @@ void drawDROPage() {
 }
 
 void drawDRONavButtons() {
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  
-  tft.fillRect(CONTROLBUTTON_X, CONTROLBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.drawString("Ctrl", CONTROLBUTTON_X + (AXISBUTTON_W / 2), CONTROLBUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(MPGBUTTON_X, MPGBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.drawString("MPG", MPGBUTTON_X + (AXISBUTTON_W / 2), MPGBUTTON_Y + (AXISBUTTON_H / 2)); 
-  
-  tft.fillRect(SLIDERBUTTON_X, SLIDERBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.drawString("Speed", SLIDERBUTTON_X + (AXISBUTTON_W / 2), SLIDERBUTTON_Y + (AXISBUTTON_H / 2)); 
-}
-
-void drawBackButton() {
-   tft.fillRect(BACKBUTTON_X, BACKBUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-   tft.setTextColor(TFT_BLACK);
-   tft.setTextSize(2);
-   tft.setTextDatum(MC_DATUM);
-   tft.drawString("Back", BACKBUTTON_X + (AXISBUTTON_W / 2), BACKBUTTON_Y + (AXISBUTTON_H / 2));
+  drawButtonOnScreen("Ctrl", CONTROLBUTTON_X, CONTROLBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
+  drawButtonOnScreen("MPG", MPGBUTTON_X, MPGBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
+  drawButtonOnScreen("Speed", SPEEDBUTTON_X, SPEEDBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
 }
 
 void drawDROValue(byte axisID, byte hreg1, byte hreg2) {

@@ -3,7 +3,7 @@ void drawControlPage() {
 
   tft.fillScreen(TFT_BLACK);
   
-  drawBackButton();
+  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
 }
 
 void getTouchControlPage() {
@@ -17,10 +17,8 @@ void getTouchControlPage() {
       digitalWrite(SCRLED, HIGH);
     }
 
-    if ((x > BACKBUTTON_X) && (x < (BACKBUTTON_X + AXISBUTTON_W))) {
-      if ((y > BACKBUTTON_Y) && (y <= (BACKBUTTON_Y + AXISBUTTON_H))) {
-        drawDROPage();
-      }
-    }   
+    if (boundingBoxPressed(x, y, BACKBUTTON_X, (BACKBUTTON_X + MIDBUTTON_W), BACKBUTTON_Y, (BACKBUTTON_Y + MIDBUTTON_H))) {
+      drawDROPage();
+    }  
   }
 }

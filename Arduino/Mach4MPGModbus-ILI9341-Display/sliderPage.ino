@@ -1,10 +1,37 @@
-void selectedButton(int32_t x, int32_t y, const char *sliderName) {
+#define SPEEDDNBTN_X 5
+#define SPEEDDNBTN_Y 125
+
+#define SPEEDUPBTN_X 200
+#define SPEEDUPBTN_Y 125
+
+#define SPINDLCCW_X 56
+#define SPINDLCCW_Y 125
+
+#define SPINDLCW_X 123
+#define SPINDLCW_Y 125
+
+#define FROBUTTON_X 5
+#define FROBUTTON_Y 195
+
+#define RROBUTTON_X 85
+#define RROBUTTON_Y 195
+
+#define SROBUTTON_X 164
+#define SROBUTTON_Y 195
+
+byte lastSlider = 0;
+
+void selectRate(int32_t x, int32_t y, const char *sliderName, uint8_t reg, uint8_t sliderNum) {
   drawSliderButtons();
-  tft.fillRect(x, y, AXISBUTTON_W, AXISBUTTON_H, TFT_GREEN);
+  tft.fillRect(x, y, MIDBUTTON_W, MIDBUTTON_H, TFT_GREEN);
   tft.setTextColor(TFT_BLACK);
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
-  tft.drawString(sliderName, x + (AXISBUTTON_W / 2), y + (AXISBUTTON_H / 2));
+  tft.drawString(sliderName, x + (MIDBUTTON_W / 2), y + (MIDBUTTON_H / 2));
+
+  int16_t regVal = mb.Hreg(reg);
+  drawSliderChange(regVal);
+  selectSlider(sliderNum);
 }
 
 void updateSlider(int16_t sliderVal) {
@@ -49,7 +76,7 @@ void drawSliderPage() {
   tft.fillScreen(TFT_BLACK);
  
   drawSliderButtons();
-  drawBackButton();
+  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
 }
 
 void selectSlider(byte newSliderID) {
@@ -72,15 +99,7 @@ void getTouchSliderPage() {
   if (mb.Hreg(114) == 555) {
       mb.Hreg(59, -1);
       return;
-  }
-  
-  if (mb.Hreg(59) == 555) {
-      mb.Hreg(56, mb.Hreg(111));
-      mb.Hreg(57, mb.Hreg(112));
-      mb.Hreg(58, mb.Hreg(113));
-      mb.Hreg(59, 444);
-      return;
-  }    
+  }   
   
   if (tft.getTouch(&x, &y)) {
     screenTime = millis();
@@ -96,54 +115,37 @@ void getTouchSliderPage() {
       updateSlider(value);
     }
 
-    if ((x > SPEEDDNBTN_X) && (x < (SPEEDDNBTN_X + SPEEDINCBTN_W))) {
-      if ((y > SPEEDDNBTN_Y) && (y <= (SPEEDDNBTN_Y + AXISBUTTON_H))) {
-        incrementSlider(-1);      
-      }
-    }
-  
-    if ((x > SPEEDUPBTN_X) && (x < (SPEEDUPBTN_X + AXISBUTTON_W))) {
-      if ((y > SPEEDUPBTN_Y) && (y <= (SPEEDUPBTN_Y + AXISBUTTON_H))) {
-        incrementSlider(1);  
-      }
-    }
-    
-    if ((x > INC1BUTTON_X) && (x < (INC1BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC1BUTTON_Y) && (y <= (INC1BUTTON_Y + AXISBUTTON_H))) {
-        selectedButton(INC1BUTTON_X, INC1BUTTON_Y, "FRO%");
-        int16_t regVal = mb.Hreg(56);
-        drawSliderChange(regVal);
-        selectSlider(10);
-      }
+    if (boundingBoxPressed(x, y, SPEEDDNBTN_X, (SPEEDDNBTN_X + SMALLBTN_W), SPEEDDNBTN_Y, (SPEEDDNBTN_Y + SMALLBTN_H))) {
+      incrementSlider(-1);
     }
 
-    if ((x > INC2BUTTON_X) && (x < (INC2BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC2BUTTON_Y) && (y <= (INC2BUTTON_Y + AXISBUTTON_H))) {
-        selectedButton(INC2BUTTON_X, INC2BUTTON_Y, "RRO%");
-        int16_t regVal = mb.Hreg(57);
-        drawSliderChange(regVal);
-        selectSlider(11);
-      }
+    if (boundingBoxPressed(x, y, SPEEDUPBTN_X, (SPEEDUPBTN_X + SMALLBTN_W), SPEEDUPBTN_Y, (SPEEDUPBTN_Y + SMALLBTN_H))) {
+      incrementSlider(1);
     }
 
-    if ((x > INC3BUTTON_X) && (x < (INC3BUTTON_X + AXISBUTTON_W))) {
-      if ((y > INC3BUTTON_Y) && (y <= (INC3BUTTON_Y + AXISBUTTON_H))) {
-        selectedButton(INC3BUTTON_X, INC3BUTTON_Y, "SRO%");
-        int16_t regVal = mb.Hreg(58);
-        drawSliderChange(regVal);
-        selectSlider(12);
-      }
+    if (boundingBoxPressed(x, y, FROBUTTON_X, (FROBUTTON_X + MIDBUTTON_W), FROBUTTON_Y, (FROBUTTON_Y + MIDBUTTON_H))) {
+      tft.fillRect(SPINDLCCW_X, SPINDLCCW_Y, (SPINDLCW_X  + MIDBUTTON_W), MIDBUTTON_H, TFT_BLACK);
+      selectRate(FROBUTTON_X, FROBUTTON_Y, "FRO%", 56, 10);
     }
-    
-    if ((x > BACKBUTTON_X) && (x < (BACKBUTTON_X + AXISBUTTON_W))) {
-      if ((y > BACKBUTTON_Y) && (y <= (BACKBUTTON_Y + AXISBUTTON_H))) {
-        slider[0].drawSliderH(100);
-        lastSlider = 0;
-        mb.Coil(regs[10], 0);
-        mb.Coil(regs[11], 0);
-        mb.Coil(regs[12], 0);
-        drawDROPage();
-      }
+
+    if (boundingBoxPressed(x, y, RROBUTTON_X, (RROBUTTON_X + MIDBUTTON_W), RROBUTTON_Y, (RROBUTTON_Y + MIDBUTTON_H))) {
+      tft.fillRect(SPINDLCCW_X, SPINDLCCW_Y, (SPINDLCW_X  + MIDBUTTON_W), MIDBUTTON_H, TFT_BLACK);
+      selectRate(RROBUTTON_X, RROBUTTON_Y, "RRO%", 57, 11);
+    }
+
+    if (boundingBoxPressed(x, y, SROBUTTON_X, (SROBUTTON_X + MIDBUTTON_W), SROBUTTON_Y, (SROBUTTON_Y + MIDBUTTON_H))) {
+      drawButtonOnScreen("CCW", SPINDLCCW_X, SPINDLCCW_Y, (MIDBUTTON_W - 10), MIDBUTTON_H);
+      drawButtonOnScreen("CW", SPINDLCW_X, SPINDLCW_Y, (MIDBUTTON_W - 10), MIDBUTTON_H);
+      selectRate(SROBUTTON_X, SROBUTTON_Y, "SRO%", 58, 12);
+    }
+
+    if (boundingBoxPressed(x, y, BACKBUTTON_X, (BACKBUTTON_X + MIDBUTTON_W), BACKBUTTON_Y, (BACKBUTTON_Y + MIDBUTTON_H))) {
+      slider[0].drawSliderH(100);
+      lastSlider = 0;
+      mb.Coil(regs[10], 0);
+      mb.Coil(regs[11], 0);
+      mb.Coil(regs[12], 0);
+      drawDROPage();
     }
   }
 }
@@ -153,34 +155,10 @@ void drawSliderButtons() {
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
   tft.drawString("FeedRate Sliders:", 120, 20);
-  
-  tft.fillRect(SPEEDDNBTN_X, SPEEDDNBTN_Y, SPEEDINCBTN_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("-", SPEEDDNBTN_X + (SPEEDINCBTN_W / 2), SPEEDDNBTN_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(SPEEDUPBTN_X, SPEEDUPBTN_Y, SPEEDINCBTN_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("+", SPEEDUPBTN_X + (SPEEDINCBTN_W / 2), SPEEDUPBTN_Y + (AXISBUTTON_H / 2));
 
-  tft.fillRect(INC1BUTTON_X, INC1BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("FRO%", INC1BUTTON_X + (AXISBUTTON_W / 2), INC1BUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(INC2BUTTON_X, INC2BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("RRO%", INC2BUTTON_X + (AXISBUTTON_W / 2), INC2BUTTON_Y + (AXISBUTTON_H / 2));
-  
-  tft.fillRect(INC3BUTTON_X, INC3BUTTON_Y, AXISBUTTON_W, AXISBUTTON_H, TFT_DARKGREY);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString("SRO%", INC3BUTTON_X + (AXISBUTTON_W / 2), INC3BUTTON_Y + (AXISBUTTON_H / 2));
+  drawButtonOnScreen("-", SPEEDDNBTN_X, SPEEDDNBTN_Y, SMALLBTN_W, SMALLBTN_H);
+  drawButtonOnScreen("+", SPEEDUPBTN_X, SPEEDUPBTN_Y, SMALLBTN_W, SMALLBTN_H);
+  drawButtonOnScreen("FRO%", FROBUTTON_X, FROBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
+  drawButtonOnScreen("RRO%", RROBUTTON_X, RROBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
+  drawButtonOnScreen("SRO%", SROBUTTON_X, SROBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
 }

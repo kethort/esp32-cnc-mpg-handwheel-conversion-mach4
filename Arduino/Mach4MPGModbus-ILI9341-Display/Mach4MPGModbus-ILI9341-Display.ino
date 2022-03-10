@@ -18,15 +18,7 @@ ESP32Encoder encoder;
 #include <TFT_eSPI.h> 
 #include <TFT_eSPI_TouchUI.h>
 
-TFT_eSPI tft = TFT_eSPI();       
-TFT_eSPI_TouchUI slider[3];
-
-#define DEBUG // enables Serial
-
-#define SLIDER_MIN 0
-#define SLIDER_MAX 100
-#define SLIDER_BTN_W 20
-#define SLIDER_BAR_L 180
+//#define DEBUG // enables Serial
 
 // This is the file name used to store the touch coordinate
 // calibration data. Change the name to start a new calibration.
@@ -37,47 +29,22 @@ TFT_eSPI_TouchUI slider[3];
 // Repeat calibration if you change the screen rotation.
 #define REPEAT_CAL false
 
-#define AXISBUTTON_W 72
-#define AXISBUTTON_H 50
+TFT_eSPI tft = TFT_eSPI();       
+TFT_eSPI_TouchUI slider[3];
 
-#define NAVBUTTON_W 92
-#define NAVBUTTON_H 50
+#define SLIDER_MIN 0
+#define SLIDER_MAX 100
+#define SLIDER_BTN_W 20
+#define SLIDER_BAR_L 180
 
-#define XAXISBUTTON_X 5
-#define XAXISBUTTON_Y 35
+#define MIDBUTTON_W 72
+#define MIDBUTTON_H 50
 
-#define YAXISBUTTON_X 85
-#define YAXISBUTTON_Y 35
-
-#define ZAXISBUTTON_X 164
-#define ZAXISBUTTON_Y 35
-
-#define AAXISBUTTON_X 5
-#define AAXISBUTTON_Y 95
-
-#define BAXISBUTTON_X 85
-#define BAXISBUTTON_Y 95
-
-#define CAXISBUTTON_X 164
-#define CAXISBUTTON_Y 95
-
-#define INC1BUTTON_X 5
-#define INC1BUTTON_Y 195
-
-#define INC2BUTTON_X 85
-#define INC2BUTTON_Y 195
-
-#define INC3BUTTON_X 164
-#define INC3BUTTON_Y 195
-
-#define BACKBUTTON_X 85
-#define BACKBUTTON_Y 265
+#define SMALLBTN_W (MIDBUTTON_W / 2)
+#define SMALLBTN_H  MIDBUTTON_H
 
 #define IP_ADDR_X 120
 #define IP_ADDR_Y 20
-
-#define BATTERY_LEVEL_X 110
-#define BATTERY_LEVEL_Y 265
 
 #define CONTROLBUTTON_X 5
 #define CONTROLBUTTON_Y 265
@@ -85,25 +52,17 @@ TFT_eSPI_TouchUI slider[3];
 #define MPGBUTTON_X 85
 #define MPGBUTTON_Y 265
 
-#define SLIDERBUTTON_X 164
-#define SLIDERBUTTON_Y 265
+#define SPEEDBUTTON_X 164
+#define SPEEDBUTTON_Y 265
 
-#define SPEEDDNBTN_X 5
-#define SPEEDDNBTN_Y 125
-
-#define SPEEDUPBTN_X 200
-#define SPEEDUPBTN_Y 125
-
-#define SPEEDINCBTN_W (AXISBUTTON_W / 2)
+#define BACKBUTTON_X 85
+#define BACKBUTTON_Y 265
 
 #define MPGEN 32
 #define SCRLED 27
 #define ADC0 25
 #define ADC1 26
 
-byte lastAxis = 50;
-byte lastInc = 50;
-byte lastSlider = 0;
 byte pageNum;
 float lastDRODecimal[6];
 uint32_t lastUpdatePercent;
@@ -111,8 +70,6 @@ uint32_t lastUpdatePercent;
 #define SCR_TMOUT 30000
 uint32_t screenTime = 0; 
 bool screenActive = true;
-bool droPageLoad;
-bool sliderPageLoad = true;
 
 void setup(void)
 {
@@ -215,6 +172,23 @@ void loop() {
       getTouchSliderPage();
       break;
   }
+}
+
+bool boundingBoxPressed(uint16_t xLoc, uint16_t yLoc, int16_t xMin, int16_t xMax, int16_t yMin, int16_t yMax) {
+  if ((xLoc > xMin) && (xLoc <= xMax)) {
+    if ((yLoc > yMin) && (yLoc <= yMax)) {
+      return true;    
+    }
+  }
+  return false;
+}
+
+void drawButtonOnScreen(const char *label, uint16_t xLoc, uint16_t yLoc, uint16_t xWidth, uint16_t yHeight) {
+  tft.fillRect(xLoc, yLoc, xWidth, yHeight, TFT_DARKGREY);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString(label, xLoc + (xWidth / 2), yLoc + (yHeight / 2));
 }
 
 void drawWifiUpdateScreen() {
