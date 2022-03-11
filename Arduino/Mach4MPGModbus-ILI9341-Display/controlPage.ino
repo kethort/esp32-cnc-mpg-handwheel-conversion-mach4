@@ -22,7 +22,7 @@ void drawControlPage() {
   tft.fillScreen(TFT_BLACK);
 
   drawControlButtons();
-  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
+  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, NAVBUTTON_H);
 }
 
 void getTouchControlPage() {

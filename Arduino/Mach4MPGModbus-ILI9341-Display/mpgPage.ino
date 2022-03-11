@@ -87,7 +87,7 @@ void drawMPGPage() {
   tft.fillScreen(TFT_BLACK);
   drawAxisButtons();
   drawIncButtons();
-  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
+  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, NAVBUTTON_H);
 
   switch(lastAxis) {
     case 0:

@@ -40,6 +40,8 @@ TFT_eSPI_TouchUI slider[3];
 #define MIDBUTTON_W 72
 #define MIDBUTTON_H 50
 
+#define NAVBUTTON_H 40
+
 #define SMALLBTN_W (MIDBUTTON_W / 2)
 #define SMALLBTN_H  MIDBUTTON_H
 
@@ -47,16 +49,16 @@ TFT_eSPI_TouchUI slider[3];
 #define IP_ADDR_Y 20
 
 #define CONTROLBUTTON_X 5
-#define CONTROLBUTTON_Y 265
+#define CONTROLBUTTON_Y 275
 
 #define MPGBUTTON_X 85
-#define MPGBUTTON_Y 265
+#define MPGBUTTON_Y 275
 
 #define SPEEDBUTTON_X 164
-#define SPEEDBUTTON_Y 265
+#define SPEEDBUTTON_Y 275
 
 #define BACKBUTTON_X 85
-#define BACKBUTTON_Y 265
+#define BACKBUTTON_Y 275
 
 #define MPGEN 32
 #define SCRLED 27

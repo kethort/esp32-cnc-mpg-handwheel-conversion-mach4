@@ -76,7 +76,7 @@ void drawSliderPage() {
   tft.fillScreen(TFT_BLACK);
  
   drawSliderButtons();
-  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
+  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, NAVBUTTON_H);
 }
 
 void selectSlider(byte newSliderID) {
