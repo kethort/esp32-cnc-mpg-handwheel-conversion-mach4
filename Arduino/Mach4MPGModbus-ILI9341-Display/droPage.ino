@@ -21,6 +21,23 @@
 
 bool droPageLoad;
 
+void drawDROPage() {
+  pageNum = 1;
+  
+  tft.fillScreen(TFT_BLACK);
+  
+  char strBfr[50];
+  tft.setTextColor(TFT_WHITE);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  sprintf(strBfr, "%s", WiFi.localIP().toString().c_str());
+  tft.drawString(strBfr, IP_ADDR_X, IP_ADDR_Y); 
+
+  drawDROs();
+  drawZeroButtons();
+  drawDRONavButtons();
+}
+
 void getTouchDROPage() {
   uint16_t x, y;
 
@@ -33,27 +50,33 @@ void getTouchDROPage() {
     }
 
     if (boundingBoxPressed(x, y, XZEROBUTTON_X, (XZEROBUTTON_X + ZEROBUTTON_W), XZEROBUTTON_Y, (XZEROBUTTON_Y + ZEROBUTTON_H))) {
-      zeroAxis(XZEROBUTTON_X, XZEROBUTTON_Y, "X:");
+      highlightButton(&drawZeroButtons, XZEROBUTTON_X, XZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H, "X:");
+      drawAxisControlPage("X");
     }
 
     if (boundingBoxPressed(x, y, YZEROBUTTON_X, (YZEROBUTTON_X + ZEROBUTTON_W), YZEROBUTTON_Y, (YZEROBUTTON_Y + ZEROBUTTON_H))) {
-      zeroAxis(YZEROBUTTON_X, YZEROBUTTON_Y, "Y:");
+      highlightButton(&drawZeroButtons, YZEROBUTTON_X, YZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H, "Y:");
+      drawAxisControlPage("Y");
     }
 
     if (boundingBoxPressed(x, y, ZZEROBUTTON_X, (ZZEROBUTTON_X + ZEROBUTTON_W), ZZEROBUTTON_Y, (ZZEROBUTTON_Y + ZEROBUTTON_H))) {
-      zeroAxis(ZZEROBUTTON_X, ZZEROBUTTON_Y, "Z:");
+      highlightButton(&drawZeroButtons, ZZEROBUTTON_X, ZZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H, "Z:");
+      drawAxisControlPage("Z");
     }
 
     if (boundingBoxPressed(x, y, AZEROBUTTON_X, (AZEROBUTTON_X + ZEROBUTTON_W), AZEROBUTTON_Y, (AZEROBUTTON_Y + ZEROBUTTON_H))) {
-      zeroAxis(AZEROBUTTON_X, AZEROBUTTON_Y, "A:");
+      highlightButton(&drawZeroButtons, AZEROBUTTON_X, AZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H, "A:");
+      drawAxisControlPage("A");
     }
 
     if (boundingBoxPressed(x, y, BZEROBUTTON_X, (BZEROBUTTON_X + ZEROBUTTON_W), BZEROBUTTON_Y, (BZEROBUTTON_Y + ZEROBUTTON_H))) {
-      zeroAxis(BZEROBUTTON_X, BZEROBUTTON_Y, "B:");
+      highlightButton(&drawZeroButtons, BZEROBUTTON_X, BZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H, "B:");
+      drawAxisControlPage("B");
     }
 
     if (boundingBoxPressed(x, y, CZEROBUTTON_X, (CZEROBUTTON_X + ZEROBUTTON_W), CZEROBUTTON_Y, (CZEROBUTTON_Y + ZEROBUTTON_H))) {
-      zeroAxis(CZEROBUTTON_X, CZEROBUTTON_Y, "C:");
+      highlightButton(&drawZeroButtons, CZEROBUTTON_X, CZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H, "C:");
+      drawAxisControlPage("C");
     }
     
     if (boundingBoxPressed(x, y, CONTROLBUTTON_X, (CONTROLBUTTON_X + MIDBUTTON_W), CONTROLBUTTON_Y, (CONTROLBUTTON_Y + MIDBUTTON_H))) {
@@ -68,22 +91,6 @@ void getTouchDROPage() {
       drawSliderPage();
     }
   }
-}
-
-void drawDROPage() {
-  pageNum = 1;
-  
-  tft.fillScreen(TFT_BLACK);
-  
-  char strBfr[50];
-  tft.setTextColor(TFT_WHITE);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  sprintf(strBfr, "%s", WiFi.localIP().toString().c_str());
-  tft.drawString(strBfr, IP_ADDR_X, IP_ADDR_Y); 
-
-  drawDROs();
-  drawDRONavButtons();
 }
 
 void drawDRONavButtons() {
@@ -127,7 +134,6 @@ void drawDROs() {
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
 
-  drawZeroButtons();
   updateDROs();
   droPageLoad = false;
 }
@@ -139,13 +145,4 @@ void drawZeroButtons() {
   drawButtonOnScreen("A:", AZEROBUTTON_X, AZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H);
   drawButtonOnScreen("B:", BZEROBUTTON_X, BZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H);
   drawButtonOnScreen("C:", CZEROBUTTON_X, CZEROBUTTON_Y, ZEROBUTTON_W, ZEROBUTTON_H);
-}
-
-void zeroAxis(int32_t x, int32_t y, const char *axisID) {
-  drawZeroButtons();
-  tft.fillRect(x, y, ZEROBUTTON_W, ZEROBUTTON_H, TFT_GREEN);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString(axisID, x + (ZEROBUTTON_W / 2), y + (ZEROBUTTON_H / 2));
 }

@@ -28,6 +28,48 @@
 byte lastAxis = 50;
 byte lastInc = 50;
 
+void drawMPGPage() {
+  pageNum = 3;
+
+  tft.fillScreen(TFT_BLACK);
+  drawAxisButtons();
+  drawIncButtons();
+  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, NAVBUTTON_H);
+
+  switch(lastAxis) {
+    case 0:
+      selectAxis(XAXISBUTTON_X, XAXISBUTTON_Y, "X", 50);
+      break;
+    case 1:
+      selectAxis(YAXISBUTTON_X, YAXISBUTTON_Y, "Y", 50);
+      break;
+    case 2:
+      selectAxis(ZAXISBUTTON_X, ZAXISBUTTON_Y, "Z", 50);
+      break;
+    case 3:
+      selectAxis(AAXISBUTTON_X, AAXISBUTTON_Y, "A", 50);
+      break;
+    case 4:
+      selectAxis(BAXISBUTTON_X, BAXISBUTTON_Y, "B", 50);
+      break;
+    case 5:
+      selectAxis(CAXISBUTTON_X, CAXISBUTTON_Y, "C", 50);
+      break;
+  }
+
+  switch(lastInc) {
+    case 7:
+      selectInc(INC1BUTTON_X, INC1BUTTON_Y, "0.001", 50);
+      break;
+    case 8:
+      selectInc(INC2BUTTON_X, INC2BUTTON_Y, "0.01", 50);
+      break;
+    case 9:
+      selectInc(INC3BUTTON_X, INC3BUTTON_Y, "0.1", 50);
+      break;
+  }
+}
+
 void getTouchMPGPage() {
   uint16_t x, y;
 
@@ -81,48 +123,6 @@ void getTouchMPGPage() {
   }
 }
 
-void drawMPGPage() {
-  pageNum = 3;
-
-  tft.fillScreen(TFT_BLACK);
-  drawAxisButtons();
-  drawIncButtons();
-  drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, NAVBUTTON_H);
-
-  switch(lastAxis) {
-    case 0:
-      selectAxis(XAXISBUTTON_X, XAXISBUTTON_Y, "X", 50);
-      break;
-    case 1:
-      selectAxis(YAXISBUTTON_X, YAXISBUTTON_Y, "Y", 50);
-      break;
-    case 2:
-      selectAxis(ZAXISBUTTON_X, ZAXISBUTTON_Y, "Z", 50);
-      break;
-    case 3:
-      selectAxis(AAXISBUTTON_X, AAXISBUTTON_Y, "A", 50);
-      break;
-    case 4:
-      selectAxis(BAXISBUTTON_X, BAXISBUTTON_Y, "B", 50);
-      break;
-    case 5:
-      selectAxis(CAXISBUTTON_X, CAXISBUTTON_Y, "C", 50);
-      break;
-  }
-
-  switch(lastInc) {
-    case 7:
-      selectInc(INC1BUTTON_X, INC1BUTTON_Y, "0.001", 50);
-      break;
-    case 8:
-      selectInc(INC2BUTTON_X, INC2BUTTON_Y, "0.01", 50);
-      break;
-    case 9:
-      selectInc(INC3BUTTON_X, INC3BUTTON_Y, "0.1", 50);
-      break;
-  }
-}
-
 void drawIncButtons() {
   tft.setTextColor(TFT_WHITE);
   tft.setTextSize(2);
@@ -149,12 +149,7 @@ void drawAxisButtons() {
 }
 
 void selectAxis(int32_t x, int32_t y, const char *axisID, int8_t newAxis) {
-  drawAxisButtons();
-  tft.fillRect(x, y, MIDBUTTON_W, MIDBUTTON_H, TFT_GREEN);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString(axisID, x + (MIDBUTTON_W / 2), y + (MIDBUTTON_H / 2));
+  highlightButton(&drawAxisButtons, x, y, MIDBUTTON_W, MIDBUTTON_H, axisID);
 
   if (newAxis < 49) {
     mb.Coil(regs[lastAxis], 0);
@@ -163,13 +158,8 @@ void selectAxis(int32_t x, int32_t y, const char *axisID, int8_t newAxis) {
   }
 }
 
-void selectInc(int32_t x, int32_t y, const char *axisID, int8_t newInc) {
-  drawIncButtons();
-  tft.fillRect(x, y, MIDBUTTON_W, MIDBUTTON_H, TFT_GREEN);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString(axisID, x + (MIDBUTTON_W / 2), y + (MIDBUTTON_H / 2));
+void selectInc(int32_t x, int32_t y, const char *incID, int8_t newInc) {
+  highlightButton(&drawIncButtons, x, y, MIDBUTTON_W, MIDBUTTON_H, incID);
 
   if (newInc < 49) {
     mb.Coil(regs[lastInc], 0);

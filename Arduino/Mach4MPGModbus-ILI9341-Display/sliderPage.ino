@@ -21,74 +21,13 @@
 
 byte lastSlider = 0;
 
-void selectRate(int32_t x, int32_t y, const char *sliderName, uint8_t reg, uint8_t sliderNum) {
-  drawSliderButtons();
-  tft.fillRect(x, y, MIDBUTTON_W, MIDBUTTON_H, TFT_GREEN);
-  tft.setTextColor(TFT_BLACK);
-  tft.setTextSize(2);
-  tft.setTextDatum(MC_DATUM);
-  tft.drawString(sliderName, x + (MIDBUTTON_W / 2), y + (MIDBUTTON_H / 2));
-
-  int16_t regVal = mb.Hreg(reg);
-  drawSliderChange(regVal);
-  selectSlider(sliderNum);
-}
-
-void updateSlider(int16_t sliderVal) {
-  int16_t regVal;
-
-  switch(lastSlider) {
-    case 10:
-      mb.Hreg(56, sliderVal);
-      break;
-    case 11:
-      mb.Hreg(57, sliderVal);
-      break;
-    case 12:
-      mb.Hreg(58, sliderVal);
-      break;
-  }
-}
-
-void incrementSlider(int8_t inc) {
-  uint8_t sliderVal = 0;
-  
-  switch (lastSlider) {
-    case 10:
-      sliderVal = ((mb.Hreg(56) == 0) && (inc < 0)) ? 0 : mb.Hreg(56) + inc;
-      break;
-    case 11:
-      sliderVal = ((mb.Hreg(57) == 0) && (inc < 0)) ? 0 : mb.Hreg(57) + inc;
-      break;
-    case 12:
-      sliderVal = ((mb.Hreg(58) == 0) && (inc < 0)) ? 0 : mb.Hreg(58) + inc;
-      break;
-  }
-  sliderVal = constrain(sliderVal, 0, 100);
-
-  updateSlider(sliderVal);
-  slider[0].drawSliderH(sliderVal);
-}
-
 void drawSliderPage() {
   pageNum = 4;
   
   tft.fillScreen(TFT_BLACK);
- 
+
   drawSliderButtons();
   drawButtonOnScreen("Back", BACKBUTTON_X, BACKBUTTON_Y, MIDBUTTON_W, NAVBUTTON_H);
-}
-
-void selectSlider(byte newSliderID) {
-  mb.Coil(regs[lastSlider], 0);
-  lastSlider = newSliderID;
-  mb.Coil(regs[newSliderID], 1);  
-}
-
-void drawSliderChange(int16_t regVal) {
-  slider[0].drawSliderH(100);
-  slider[0].drawSliderH(0);
-  slider[0].drawSliderH(regVal);
 }
 
 void getTouchSliderPage() {
@@ -150,6 +89,60 @@ void getTouchSliderPage() {
   }
 }
 
+void selectRate(int32_t x, int32_t y, const char *sliderName, uint8_t reg, uint8_t sliderNum) {
+  highlightButton(&drawSliderButtons, x, y, MIDBUTTON_W, MIDBUTTON_H, sliderName);
+
+  int16_t regVal = mb.Hreg(reg);
+  drawSliderChange(regVal);
+  selectSlider(sliderNum);
+}
+
+void updateSlider(int16_t sliderVal) {
+  int16_t regVal;
+
+  switch(lastSlider) {
+    case 10:
+      mb.Hreg(56, sliderVal);
+      break;
+    case 11:
+      mb.Hreg(57, sliderVal);
+      break;
+    case 12:
+      mb.Hreg(58, sliderVal);
+      break;
+  }
+}
+
+void incrementSlider(int8_t inc) {
+  uint8_t sliderVal = 0;
+  
+  switch (lastSlider) {
+    case 10:
+      sliderVal = ((mb.Hreg(56) == 0) && (inc < 0)) ? 0 : mb.Hreg(56) + inc;
+      break;
+    case 11:
+      sliderVal = ((mb.Hreg(57) == 0) && (inc < 0)) ? 0 : mb.Hreg(57) + inc;
+      break;
+    case 12:
+      sliderVal = ((mb.Hreg(58) == 0) && (inc < 0)) ? 0 : mb.Hreg(58) + inc;
+      break;
+  }
+  sliderVal = constrain(sliderVal, 0, 100);
+
+  updateSlider(sliderVal);
+  slider[0].drawSliderH(sliderVal);
+}
+
+void selectSlider(byte newSliderID) {
+  mb.Coil(regs[lastSlider], 0);
+  lastSlider = newSliderID;
+  mb.Coil(regs[newSliderID], 1);  
+}
+
+void drawSliderChange(int16_t regVal) {
+  slider[0].drawSliderH(regVal);
+}
+
 void drawSliderButtons() {
   tft.setTextColor(TFT_WHITE);
   tft.setTextSize(2);
@@ -157,7 +150,7 @@ void drawSliderButtons() {
   tft.drawString("FeedRate Sliders:", 120, 20);
 
   drawButtonOnScreen("-", SPEEDDNBTN_X, SPEEDDNBTN_Y, SMALLBTN_W, SMALLBTN_H);
-  drawButtonOnScreen("+", SPEEDUPBTN_X, SPEEDUPBTN_Y, SMALLBTN_W, SMALLBTN_H);
+  drawButtonOnScreen("+", SPEEDUPBTN_X, SPEEDUPBTN_Y, SMALLBTN_W, SMALLBTN_H);    
   drawButtonOnScreen("FRO%", FROBUTTON_X, FROBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
   drawButtonOnScreen("RRO%", RROBUTTON_X, RROBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);
   drawButtonOnScreen("SRO%", SROBUTTON_X, SROBUTTON_Y, MIDBUTTON_W, MIDBUTTON_H);

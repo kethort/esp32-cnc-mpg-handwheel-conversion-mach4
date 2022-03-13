@@ -173,6 +173,9 @@ void loop() {
     case 4:
       getTouchSliderPage();
       break;
+    case 5:
+      getTouchAxisControlPage();
+      break;
   }
 }
 
@@ -191,6 +194,15 @@ void drawButtonOnScreen(const char *label, uint16_t xLoc, uint16_t yLoc, uint16_
   tft.setTextSize(2);
   tft.setTextDatum(MC_DATUM);
   tft.drawString(label, xLoc + (xWidth / 2), yLoc + (yHeight / 2));
+}
+
+void highlightButton(void (*drawButtonsFunc)(void), int32_t x, int32_t y, int32_t w, int32_t h, const char *label) {
+  drawButtonsFunc();
+  tft.fillRect(x, y, w, h, TFT_GREEN);
+  tft.setTextColor(TFT_BLACK);
+  tft.setTextSize(2);
+  tft.setTextDatum(MC_DATUM);
+  tft.drawString(label, x + (w / 2), y + (h / 2));
 }
 
 void drawWifiUpdateScreen() {
