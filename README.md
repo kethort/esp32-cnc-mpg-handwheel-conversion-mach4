@@ -26,7 +26,7 @@ https://www.youtube.com/watch?v=5fpQ3xS1Tu8&t=2s
 6. The ESP32 device should show up in the list of network access points. 
 
 <p align="center">
-  <img src="/img/access_point.png" width="250"/>
+  <img src="/img/IMG_1540.jpeg" width="250"/>
 </p>
 
 7. Connect to this access point and navigate to 192.168.4.1 in a browser. 
