@@ -409,7 +409,7 @@ class AppWindow(wx.Frame):
 
 		ini_dict['Mpg11']['Enabled'] = 0
 
-		# makes a copy of the Mach4 Screen and extracts it's contents into a tmeporary directory
+		# makes a copy of the Mach4 Screen and extracts it's contents into a temporary directory
 		screens_dir = os.path.join(mach_dir, 'Screens')
 		screen_name = ini_dict['Preferences']['Screen'].strip()
 		screen_path = os.path.join(screens_dir, screen_name)
