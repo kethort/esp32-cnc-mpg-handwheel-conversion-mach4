@@ -69,6 +69,15 @@ https://www.youtube.com/watch?v=5fpQ3xS1Tu8&t=2s
   <img src="/img/wizard.PNG" width="300"/>
 </p>   
 
+## Installer Build from Source
+If you want to make changes to MPGInstaller.py and rebuild exe file:
+
+1. Install Python
+2. Run in elevated command line window from root directory of repo: '''pip install -r requirements.txt'''
+3. Run in command line window from root directory of repo: '''python setup.py py2exe"
+
+The updated .exe file will be created in the dist/ folder. 
+
 ## PCB Gerber File & 3d print files for Display included
 Original 3d print: https://www.thingiverse.com/thing:4539827
 
