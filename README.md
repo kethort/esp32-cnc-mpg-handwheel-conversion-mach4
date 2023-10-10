@@ -73,8 +73,8 @@ https://www.youtube.com/watch?v=5fpQ3xS1Tu8&t=2s
 If you want to make changes to MPGInstaller.py and rebuild exe file:
 
 1. Install Python
-2. Run in elevated command line window from root directory of repo: '''pip install -r requirements.txt'''
-3. Run in command line window from root directory of repo: '''python setup.py py2exe"
+2. In elevated command line window from root directory of repo: ```pip install -r requirements.txt```
+4. In command line window from root directory of repo: ```python setup.py py2exe```
 
 The updated .exe file will be created in the dist/ folder. 
 
