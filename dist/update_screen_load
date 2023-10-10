@@ -1,8 +1,3 @@
-
---ModbusMPG module
-package.loaded.ModbusMPG = nil
-ModbusMPG = require "ModbusMPG"
-
 --ModbusMPG module
 package.loaded.ModbusMPG = nil
 ModbusMPG = require "ModbusMPG"

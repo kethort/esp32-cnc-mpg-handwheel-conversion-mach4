@@ -111,15 +111,8 @@ function processMPGMove(modbusMPGEncoderCounts)
 	if lastMPGEncoderCounts ~= modbusMPGEncoderCounts then
 		machEncoderCounts = newMachMPGEncCounts
 
-		-- there is a weird bug when switching axes while the other axis is still moving.
-		-- instead of finishing the last move and starting a new move, something reverts the last
-		-- axis to where it was before the MPG move and moves the new axis to the current encoder counts
-		-- of the pendant. That is why the program is "forced" to only accept a delta in counts less than 100
-		if math.abs(newMachMPGEncCounts - lastMPGCountsMoved) < 100 then
-			mc.mcMpgSetAxis(inst, 11, ModbusMPG.mpgSelectedAxis - 1)
-			mc.mcMpgMoveCounts(inst, 11, newMachMPGEncCounts - lastMPGCountsMoved)
-		end
-
+		mc.mcMpgSetAxis(inst, 11, ModbusMPG.mpgSelectedAxis - 1)
+		mc.mcMpgMoveCounts(inst, 11, newMachMPGEncCounts - lastMPGCountsMoved)
 		
 		lastMPGCountsMoved = newMachMPGEncCounts
 		lastMPGEncoderCounts = newMachMPGEncCounts
