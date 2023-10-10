@@ -78,6 +78,7 @@ If you want to make changes to MPGInstaller.py and rebuild exe file:
 
 The updated .exe file will be created in the dist/ folder. 
 
+
 ## PCB Gerber File & 3d print files for Display included
 Original 3d print: https://www.thingiverse.com/thing:4539827
 
