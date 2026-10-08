@@ -105,18 +105,40 @@ end
 -- counts. this will continue the counts in the + or - direction "indefinitely" instead
 -- of rolling over to max/min size of 16-bit integer once the encoder count extent is reached.
 function processMPGMove(modbusMPGEncoderCounts)
-	local currentMachMPGEncCounts = machEncoderCounts
-	local newMachMPGEncCounts = currentMachMPGEncCounts + math.fmod((modbusMPGEncoderCounts - lastMPGEncoderCounts), 32700)
 
-	if lastMPGEncoderCounts ~= modbusMPGEncoderCounts then
-		machEncoderCounts = newMachMPGEncCounts
+    local currentMachMPGEncCounts = machEncoderCounts
 
-		mc.mcMpgSetAxis(inst, 11, ModbusMPG.mpgSelectedAxis - 1)
-		mc.mcMpgMoveCounts(inst, 11, newMachMPGEncCounts - lastMPGCountsMoved)
-		
-		lastMPGCountsMoved = newMachMPGEncCounts
-		lastMPGEncoderCounts = newMachMPGEncCounts
-	end
+    local delta =
+        math.fmod(
+            modbusMPGEncoderCounts - lastMPGEncoderCounts,
+            32700
+        )
+
+    if lastMPGEncoderCounts ~= modbusMPGEncoderCounts then
+
+        local newMachMPGEncCounts =
+            currentMachMPGEncCounts + delta
+
+        machEncoderCounts = newMachMPGEncCounts
+
+        mc.mcMpgSetAxis(
+            inst,
+            11,
+            ModbusMPG.mpgSelectedAxis - 1
+        )
+
+        mc.mcMpgMoveCounts(
+            inst,
+            11,
+            newMachMPGEncCounts - lastMPGCountsMoved
+        )
+
+        lastMPGCountsMoved = newMachMPGEncCounts
+
+        -- Important:
+        -- remember the RAW ESP32/Modbus encoder count
+        lastMPGEncoderCounts = modbusMPGEncoderCounts
+    end
 end
 
 function modbusIsRunning()

@@ -276,6 +276,27 @@ void setupOTA(const char* nameprefix) {
   ArduinoOTA.begin();
 }
 
+void recalibrateTouch() {
+
+    // Ensure screen is awake
+    screenActive = true;
+    digitalWrite(SCRLED, HIGH);
+
+    // Remove the saved calibration data.
+    // touch_calibrate() will see that the file is missing
+    // and run a fresh calibration.
+    if (SPIFFS.exists(CALIBRATION_FILE)) {
+        SPIFFS.remove(CALIBRATION_FILE);
+    }
+
+    touch_calibrate();
+
+    // Return to the CTRL screen when calibration finishes.
+    drawControlPage();
+
+    screenTime = millis();
+}
+
 void touch_calibrate() {
   uint16_t calData[5];
   uint8_t calDataOK = 0;
